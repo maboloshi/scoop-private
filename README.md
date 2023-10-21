@@ -9,7 +9,7 @@
 
 | 软件                    | 简介                                                                                          |
 | ----------------------- | --------------------------------------------------------------------------------------------- |
-clash-for-windows-cn      | 一个基于 Clash 的 Windows/macOS 图形用户界面 (集成[第三方汉化包](https://github.com/BoyceLig/Clash_Chinese_Patch))
+clash-for-windows-cn      | 一个基于 Clash 的 Windows 图形用户界面 (集成[第三方汉化包](https://github.com/BoyceLig/Clash_Chinese_Patch))
 
 ### 破解版文件来源和文件状态
 
