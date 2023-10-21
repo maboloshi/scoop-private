@@ -1,6 +1,6 @@
 param(
     # overwrite upstream param
-    [String]$upstream = "maboloshi/Scoop-Bucket:master"
+    [String]$upstream = "maboloshi/scoop-private:master"
 )
 
 if (!$env:SCOOP_HOME) { $env:SCOOP_HOME = Convert-Path (scoop prefix scoop) }
