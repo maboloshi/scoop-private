@@ -31,3 +31,9 @@ scoop bucket add scoop-private https://github.com/maboloshi/scoop-private
 ```powershell
 scoop install scoop-private/<软件名>
 ```
+
+## 参考
+- [Scoop Wiki - Buckets](https://github.com/ScoopInstaller/scoop/wiki/Buckets)
+- [Scoop Wiki - App Manifests](https://github.com/ScoopInstaller/Scoop/wiki/App-Manifests)
+- [Scoop Wiki - Autoupdate](https://github.com/ScoopInstaller/scoop/wiki/App-Manifest-Autoupdate)
+- [Contributing Guide](https://github.com/ScoopInstaller/.github/blob/main/.github/CONTRIBUTING.md)
