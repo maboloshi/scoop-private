@@ -1,42 +1,33 @@
-# Scoop Bucket Template
+# Scoop-Private
 
-<!-- Uncomment the following line after replacing placeholders -->
-<!-- [![Tests](https://github.com/<username>/<bucketname>/actions/workflows/ci.yml/badge.svg)](https://github.com/<username>/<bucketname>/actions/workflows/ci.yml) [![Excavator](https://github.com/<username>/<bucketname>/actions/workflows/excavator.yml/badge.svg)](https://github.com/<username>/<bucketname>/actions/workflows/excavator.yml) -->
+一个私有 Scoop 软件库，用于存放官方未收录软件、自用汉化包、破解版软件等，不对外开放。<br>
+破解版的二进制文件包以附件的形式存放在本项目 `Release v1.0` 下<br>
 
-Template bucket for [Scoop](https://scoop.sh), the Windows command-line installer.
+## 收录软件
 
-## How do I use this template?
+### 常规版
 
-1. Generate your own copy of this repository with the "Use this template"
-   button.
-2. Allow all GitHub Actions:
-   - Navigate to `Settings` - `Actions` - `General` - `Actions permissions`.
-   - Select `Allow all actions and reusable workflows`.
-   - Then `Save`.
-3. Allow writing to the repository from within GitHub Actions:
-   - Navigate to `Settings` - `Actions` - `General` - `Workflow permissions`.
-   - Select `Read and write permissions`.
-   - Then `Save`.
-4. Document the bucket in `README.md`.
-5. Replace the placeholder repository string in `bin/auto-pr.ps1`.
-6. Create new manifests by copying `bucket/app-name.json.template` to
-   `bucket/<app-name>.json`.
-7. Commit and push changes.
-8. If you'd like your bucket to be indexed on `https://scoop.sh`, add the
-   topic `scoop-bucket` to your repository.
+| 软件                    | 简介                                                                                          |
+| ----------------------- | --------------------------------------------------------------------------------------------- |
+clash-for-windows-cn      | 一个基于 Clas 的 Windows/macOS 图形用户界面 (集成[第三方汉化包](https://github.com/BoyceLig/Clash_Chinese_Patch))
 
-## How do I install these manifests?
+### 破解版文件来源和文件状态
 
-After manifests have been committed and pushed, run the following:
+程序名|版本号|二进制文件状态|来源
+:---------------|:-------------:|:--:|:----------------------------------------------------------
+XXX             | x.x.x         | ✔ | https://xxxx
 
-```pwsh
-scoop bucket add <bucketname> https://github.com/<username>/<bucketname>
-scoop install <bucketname>/<manifestname>
+
+## 安装和使用
+
+确保你已经有 Scoop 环境，执行以下命令订阅本软件仓库：
+
+```powershell
+scoop bucket add scoop-private https://github.com/maboloshi/scoop-private
 ```
 
-## How do I contribute new manifests?
+执行以下命令安装本仓库中的软件：
 
-To make a new manifest contribution, please read the [Contributing
-Guide](https://github.com/ScoopInstaller/.github/blob/main/.github/CONTRIBUTING.md)
-and [App Manifests](https://github.com/ScoopInstaller/Scoop/wiki/App-Manifests)
-wiki page.
+```powershell
+scoop install scoop-private/<软件名>
+```
