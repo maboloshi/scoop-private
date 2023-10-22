@@ -66,7 +66,8 @@
     "shortcuts": [
         [
             "Clash for Windows.exe",
-            "Clash for Windows"
+            "Clash for Windows",
+            "--force-device-scale-factor=1.5"
         ]
     ],
     "persist": "data",
