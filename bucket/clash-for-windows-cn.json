@@ -71,7 +71,9 @@
         ]
     ],
     "persist": "data",
-    "checkver": "github",
+    "checkver": {
+        "github": "https://github.com/BoyceLig/Clash_Chinese_Patch"
+    },
     "autoupdate": {
         "architecture": {
             "64bit": {
