@@ -1,0 +1,71 @@
+{
+    "version": "119.0.2151.24",
+    "description": "The chromium based Microsoft Edge browser (Beta Channel)",
+    "homepage": "https://www.microsoft.com/en-us/edge",
+    "license": "Freeware",
+    "architecture": {
+        "64bit": {
+            "url": "https://dorado-api.deno.dev/edge?arch=64&channel=beta&version=119.0.2151.24&dl#/MicrosoftEdge-119.0.2151.24-x64.7z",
+            "hash": "55805deb6cb1a8673d0598dbdddff3e18b6356179e6e055c11354de92e1e95b0"
+        },
+        "32bit": {
+            "url": "https://dorado-api.deno.dev/edge?arch=86&channel=beta&version=119.0.2151.24&dl#/MicrosoftEdge-119.0.2151.24-x86.7z",
+            "hash": "43a02911736f5b63bd3532b29a5669ff21a3197abb9c14cb0372a970f0fbbdfb"
+        },
+        "arm64": {
+            "url": "https://dorado-api.deno.dev/edge?arch=arm64&channel=beta&version=119.0.2151.24&dl#/MicrosoftEdge-119.0.2151.24-arm64.7z",
+            "hash": "118b2122f487db8b95b45fa4f05d511038fdd089e6b81bb8d68f2365e9fb5054"
+        }
+    },
+    "installer": {
+        "script": "Expand-7zipArchive -Path \"$dir\\MSEDGE.7z\" -ExtractDir \"Chrome-bin\\$version\" -Removal"
+    },
+    "shortcuts": [
+        [
+            "msedge.exe",
+            "Microsoft Edge Beta",
+            "--force-device-scale-factor=1.5"
+        ]
+    ],
+    "post_install": [
+        "## 用户数据貌似无法复用, 安装后会重置, 故暂时不迁移用户数据",
+        "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
+        "Mount-ExternalRuntimeData -Source \"$persist_dir\\User Data\" -Target \"$env:LocalAppData\\Microsoft\\Edge Beta\\User Data\"",
+        "Remove-Module -Name Utils-private"
+    ],
+    "post_uninstall": [
+        "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
+        "Dismount-ExternalRuntimeData -Target \"$env:LocalAppData\\Microsoft\\Edge Beta\\User Data\"",
+        "Remove-Module -Name Utils-private"
+    ],
+    "persist": "User Data",
+    "checkver": {
+        "url": "https://dorado-api.deno.dev/edge?arch=64&channel=beta",
+        "jsonpath": "$.Version"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://dorado-api.deno.dev/edge?arch=64&channel=beta&version=$version&dl#/MicrosoftEdge-$version-x64.7z",
+                "hash": {
+                    "url": "https://dorado-api.deno.dev/edge?arch=64&channel=beta&version=$version",
+                    "jsonpath": "$.Hashes.Sha256"
+                }
+            },
+            "32bit": {
+                "url": "https://dorado-api.deno.dev/edge?arch=86&channel=beta&version=$version&dl#/MicrosoftEdge-$version-x86.7z",
+                "hash": {
+                    "url": "https://dorado-api.deno.dev/edge?arch=86&channel=beta&version=$version",
+                    "jsonpath": "$.Hashes.Sha256"
+                }
+            },
+            "arm64": {
+                "url": "https://dorado-api.deno.dev/edge?arch=arm64&channel=beta&version=$version&dl#/MicrosoftEdge-$version-arm64.7z",
+                "hash": {
+                    "url": "https://dorado-api.deno.dev/edge?arch=arm64&channel=beta&version=$version",
+                    "jsonpath": "$.Hashes.Sha256"
+                }
+            }
+        }
+    }
+}
