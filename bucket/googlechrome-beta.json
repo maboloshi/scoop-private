@@ -33,13 +33,10 @@
         ]
     ],
     "post_install": [
-        "if (!(Test-Path \"$dir\\User Data\\*\") -and (Test-Path \"$env:LocalAppData\\Google\\Chrome Beta\\User Data\")) {",
-        "    info '[Portable Mode]: Copying user data from local application data directory . . .'",
-        "    Copy-Item \"$env:LocalAppData\\Google\\Chrome Beta\\User Data\\*\" \"$dir\\User Data\" -Recurse",
-        "}",
-            "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
-            "Mount-ExternalRuntimeData -Source \"$persist_dir\\User Data\" -Target \"$env:LocalAppData\\Google\\Chrome\\User Data\"",
-            "Remove-Module -Name Utils-private"
+        "## 用户数据貌似无法复用, 安装后会重置, 故暂时不迁移用户数据",
+        "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
+        "Mount-ExternalRuntimeData -Source \"$persist_dir\\User Data\" -Target \"$env:LocalAppData\\Google\\Chrome\\User Data\"",
+        "Remove-Module -Name Utils-private"
     ],
     "post_uninstall": [
         "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
