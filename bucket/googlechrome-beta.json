@@ -1,0 +1,72 @@
+{
+    "version": "119.0.6045.33",
+    "description": "Fast, secure, and free web browser, built for the modern web.",
+    "homepage": "https://www.google.com/chrome/beta",
+    "license": {
+        "identifier": "Freeware",
+        "url": "https://www.google.com/chrome/privacy/eula_text.html"
+    },
+    "architecture": {
+        "64bit": {
+            "url": "https://dl.google.com/release2/chrome/adpx7ebsjqjkwtyr55ba3eoa3kgq_119.0.6045.33/119.0.6045.33_chrome_installer.exe#/dl.7z",
+            "hash": "c07f87ddc7b36e56eff60c6d0f2b107fae44e6fc32fee4d7dd420d094519c628"
+        },
+        "32bit": {
+            "url": "https://dl.google.com/release2/chrome/ac7yh64cpakd3thjbpns5j5qy5va_119.0.6045.33/119.0.6045.33_chrome_installer.exe#/dl.7z",
+            "hash": "e4155b0a33a0c2fe2831e4cd682ce710984f67020936819396f9abdd822c56ff"
+        }
+    },
+    "installer": {
+        "script": "Expand-7zipArchive \"$dir\\chrome.7z\" -ExtractDir 'Chrome-bin' -Removal"
+    },
+    "bin": [
+        [
+            "chrome.exe",
+            "chrome-beta"
+        ]
+    ],
+    "shortcuts": [
+        [
+            "chrome.exe",
+            "Google Chrome (Beta)",
+            "--force-device-scale-factor=1.5"
+        ]
+    ],
+    "post_install": [
+        "if (!(Test-Path \"$dir\\User Data\\*\") -and (Test-Path \"$env:LocalAppData\\Google\\Chrome Beta\\User Data\")) {",
+        "    info '[Portable Mode]: Copying user data from local application data directory . . .'",
+        "    Copy-Item \"$env:LocalAppData\\Google\\Chrome Beta\\User Data\\*\" \"$dir\\User Data\" -Recurse",
+        "}",
+            "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
+            "Mount-ExternalRuntimeData -Source \"$persist_dir\\User Data\" -Target \"$env:LocalAppData\\Google\\Chrome\\User Data\"",
+            "Remove-Module -Name Utils-private"
+    ],
+    "post_uninstall": [
+        "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
+        "Dismount-ExternalRuntimeData -Target \"$env:LocalAppData\\Google\\Chrome\\User Data\"",
+        "Remove-Module -Name Utils-private"
+    ],
+    "persist": "User Data",
+    "checkver": {
+        "url": "https://scoopinstaller.github.io/UpdateTracker/googlechrome/chrome.min.xml",
+        "regex": "(?sm)<beta32><version>(?<version>[\\d.]+)</version>.+release2/chrome/(?<32>[\\w-]+)_.+<beta64>.+release2/chrome/(?<64>[\\w-]+)_.+</beta64>"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://dl.google.com/release2/chrome/$match64_$version/$version_chrome_installer.exe#/dl.7z",
+                "hash": {
+                    "url": "https://scoopinstaller.github.io/UpdateTracker/googlechrome/chrome.min.xml",
+                    "xpath": "/chromechecker/beta64[version='$version']/sha256"
+                }
+            },
+            "32bit": {
+                "url": "https://dl.google.com/release2/chrome/$match32_$version/$version_chrome_installer.exe#/dl.7z",
+                "hash": {
+                    "url": "https://scoopinstaller.github.io/UpdateTracker/googlechrome/chrome.min.xml",
+                    "xpath": "/chromechecker/beta32[version='$version']/sha256"
+                }
+            }
+        }
+    }
+}
