@@ -59,11 +59,9 @@
     "persist": "Data",
     "checkver": {
         "script": [
-            "$url_dev = 'https://www.sublimetext.com/updates/4/dev_update_check'",
-            "$url_stable = 'https://www.sublimetext.com/updates/4/stable_update_check'",
-            "$dev_version = ($(Invoke-WebRequest $url_dev).Content | ConvertFrom-Json).latest_version",
-            "$stable_version = ($(Invoke-WebRequest $url_stable).Content | ConvertFrom-Json).latest_version",
-            "if ($dev_version -gt $stable_version) { Write-Output $dev_version } else { Write-Output $stable_version }"
+            "$dev_version, $stable_version = ",
+            "     'dev', 'stable' | ForEach-Object { ($(Invoke-WebRequest \"https://www.sublimetext.com/updates/4/${_}_update_check\").Content | ConvertFrom-Json).latest_version }",
+            "if ($dev_version -gt $stable_version) { $dev_version } else { $stable_version }"
         ],
         "regex": "((\\d)\\d+)",
         "replace": "$2-$1"
