@@ -43,32 +43,27 @@
         "",
         "resources"
     ],
-    "installer": {
-        "script": [
-            "if (!(Test-Path \"$persist_dir\\data\")) {",
-            "    New-Item \"$persist_dir\\data\" -Type Directory -Force | Out-Null",
-            "    if (Test-Path \"$env:USERPROFILE\\.config\\clash\") {",
-            "        Copy-Item -Path \"$env:USERPROFILE\\.config\\clash\\*\" -Destination \"$persist_dir\\data\" -Recurse -Container",
-            "    }",
-            "}",
-            "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
-            "Mount-ExternalRuntimeData -Source \"$persist_dir\\clash_win\" -Target \"$env:APPDATA\\clash_win\"",
-            "Remove-Module -Name Utils-private"
-        ]
-    },
-    "uninstaller": {
-        "script": [
-            "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
-            "Dismount-ExternalRuntimeData -Target \"$env:APPDATA\\clash_win\"",
-            "Remove-Module -Name Utils-private"
-        ]
-    },
     "shortcuts": [
         [
             "Clash for Windows.exe",
             "Clash for Windows",
             "--force-device-scale-factor=1.5"
         ]
+    ],
+    "post_install": [
+        "if (!(Test-Path \"$dir\\data\\*\") -and (Test-Path \"$env:USERPROFILE\\.config\\clash\")) {",
+        "    info '[Portable Mode]: Copying user config data . . .'",
+        "    Copy-Item \"$env:USERPROFILE\\.config\\clash\\*\" \"$persist_dir\\data\" -Recurse",
+        "    }",
+        "}",
+        "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
+        "Mount-ExternalRuntimeData -Source \"$persist_dir\\clash_win\" -Target \"$env:APPDATA\\clash_win\"",
+        "Remove-Module -Name Utils-private"
+    ],
+    "post_uninstall": [
+        "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
+        "Dismount-ExternalRuntimeData -Target \"$env:APPDATA\\clash_win\"",
+        "Remove-Module -Name Utils-private"
     ],
     "persist": "data",
     "checkver": {
