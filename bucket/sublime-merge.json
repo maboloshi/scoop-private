@@ -1,5 +1,5 @@
 {
-    "version": "2091",
+    "version": "2092",
     "description": "A Git client with snappy UI, three-way merge tool, side-by-side diffs, syntax highlighting, and more.",
     "homepage": "https://www.sublimemerge.com/",
     "license": {
@@ -12,11 +12,11 @@
     ],
     "architecture": {
         "64bit": {
-            "url": "https://download.sublimetext.com/sublime_merge_build_2091_x64.zip",
-            "hash": "e6a1ed134da825fb7668ba91f82d73ada998acd97ddf2a57d18efd67b54b1ee9"
+            "url": "https://download.sublimetext.com/sublime_merge_build_2092_x64.zip",
+            "hash": "20c09155f937c3862393ce384efc4d4dea75d5689927c1162bbc80e57300bce6"
         }
     },
-   "post_install": [
+    "post_install": [
         "'crash_handler', 'update_installer' | ForEach-Object { Remove-Item -Force \"$dir\\$_.exe\" }",
         "info 'Cracking . . .'",
         "$sublimepath = \"$dir\\sublime_merge.exe\"",
