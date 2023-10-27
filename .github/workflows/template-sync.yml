@@ -4,6 +4,11 @@ on:
     - cron: "0 */12 * * *"
   # manual trigger
   workflow_dispatch:
+
+# Set permissions on GITHUB_TOKEN to allow updates to GitHub Actions workflows
+permissions:
+  actions: write
+
 jobs:
   repo-sync:
     runs-on: ubuntu-latest
