@@ -60,7 +60,7 @@
     "checkver": {
         "script": [
             "$dev_version, $stable_version = ",
-            "     'dev', 'stable' | ForEach-Object { ($(Invoke-WebRequest \"https://www.sublimetext.com/updates/4/${_}_update_check\").Content | ConvertFrom-Json).latest_version }",
+            "     'dev', 'stable' | ForEach-Object { (Invoke-RestMethod \"https://www.sublimetext.com/updates/4/$_`_update_check\").latest_version }",
             "if ($dev_version -gt $stable_version) { $dev_version } else { $stable_version }"
         ],
         "regex": "((\\d)\\d+)",
