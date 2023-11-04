@@ -1,7 +1,7 @@
 {
     "version": "0.20.39",
     "description": "A Windows GUI based on Clash",
-    "homepage": "https://github.com/Fndroid/clash_for_windows_pkg",
+    "homepage": "https://github.com/maboloshi/scoop-private/releases/tag/v1.0",
     "license": "MIT",
     "notes": [
         "1. Integrated third-party Chinese language package.",
@@ -10,32 +10,12 @@
     "architecture": {
         "64bit": {
             "url": [
-                "https://github.com/Fndroid/clash_for_windows_pkg/releases/download/0.20.39/Clash.for.Windows-0.20.39-win.7z",
-                "https://github.com/BoyceLig/Clash_Chinese_Patch/releases/download/0.20.39/app.7z"
+                "https://github.com/maboloshi/scoop-private/releases/download/v1.0/Clash.for.Windows-0.20.39-win.7z",
+                "https://github.com/maboloshi/scoop-private/releases/download/v1.0/Clash.for.Windows.0.20.39-app.7z"
             ],
             "hash": [
                 "88db22840497c067c073ab2415fff6fe71f633d64af2fca62c37859ffba1640c",
-                "30A229C392966415CF0B68DA8C12DFCB31E3505813897A38623DA41C560BF904"
-            ]
-        },
-        "32bit": {
-            "url": [
-                "https://github.com/Fndroid/clash_for_windows_pkg/releases/download/0.20.39/Clash.for.Windows-0.20.39-ia32-win.7z",
-                "https://github.com/BoyceLig/Clash_Chinese_Patch/releases/download/0.20.39/app.7z"
-            ],
-            "hash": [
-                "c9846fbd309eac5bebb40937120f6b716000b38f3fa5e5ea7674c4fbb55e04ee",
-                "30A229C392966415CF0B68DA8C12DFCB31E3505813897A38623DA41C560BF904"
-            ]
-        },
-        "arm64": {
-            "url": [
-                "https://github.com/Fndroid/clash_for_windows_pkg/releases/download/0.20.39/Clash.for.Windows-0.20.39-arm64-win.7z",
-                "https://github.com/BoyceLig/Clash_Chinese_Patch/releases/download/0.20.39/app.7z"
-            ],
-            "hash": [
-                "504acb6bee6f0eadb47b4f7787c3707ca58ddc8a8177802486cf15fad27f7f65",
-                "30A229C392966415CF0B68DA8C12DFCB31E3505813897A38623DA41C560BF904"
+                "30a229c392966415cf0b68da8c12dfcb31e3505813897a38623da41c560bf904"
             ]
         }
     },
@@ -54,7 +34,6 @@
         "if (!(Test-Path \"$dir\\data\\*\") -and (Test-Path \"$env:USERPROFILE\\.config\\clash\")) {",
         "    info '[Portable Mode]: Copying user config data . . .'",
         "    Copy-Item \"$env:USERPROFILE\\.config\\clash\\*\" \"$persist_dir\\data\" -Recurse",
-        "    }",
         "}",
         "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
         "Mount-ExternalRuntimeData -Source \"$persist_dir\\clash_win\" -Target \"$env:APPDATA\\clash_win\"",
@@ -65,66 +44,5 @@
         "Dismount-ExternalRuntimeData -Target \"$env:APPDATA\\clash_win\"",
         "Remove-Module -Name Utils-private"
     ],
-    "persist": "data",
-    "checkver": {
-        "github": "https://github.com/BoyceLig/Clash_Chinese_Patch"
-    },
-    "autoupdate": {
-        "architecture": {
-            "64bit": {
-                "url": [
-                    "https://github.com/Fndroid/clash_for_windows_pkg/releases/download/$version/Clash.for.Windows-$version-win.7z",
-                    "https://github.com/BoyceLig/Clash_Chinese_Patch/releases/download/$version/app.7z"
-                ],
-                "hash": [
-                    {
-                        "url": "https://github.com/Fndroid/clash_for_windows_pkg/releases/download/$version/sha256sum",
-                        "mode": "extract",
-                        "regex": "(?m)^7z: $sha256"
-                    },
-                    {
-                        "url": "https://github.com/BoyceLig/Clash_Chinese_Patch/releases/download/$version/sha256sum",
-                        "mode": "extract",
-                        "regex": "app.7z: $sha256"
-                    }
-                ]
-            },
-            "32bit": {
-                "url": [
-                    "https://github.com/Fndroid/clash_for_windows_pkg/releases/download/$version/Clash.for.Windows-$version-ia32-win.7z",
-                    "https://github.com/BoyceLig/Clash_Chinese_Patch/releases/download/$version/app.7z"
-                ],
-                "hash": [
-                    {
-                        "url": "https://github.com/Fndroid/clash_for_windows_pkg/releases/download/$version/sha256sum",
-                        "mode": "extract",
-                        "regex": "(?m)^ia32-7z: $sha256"
-                    },
-                    {
-                        "url": "https://github.com/BoyceLig/Clash_Chinese_Patch/releases/download/$version/sha256sum",
-                        "mode": "extract",
-                        "regex": "app.7z: $sha256"
-                    }
-                ]
-            },
-            "arm64": {
-                "url": [
-                    "https://github.com/Fndroid/clash_for_windows_pkg/releases/download/$version/Clash.for.Windows-$version-arm64-win.7z",
-                    "https://github.com/BoyceLig/Clash_Chinese_Patch/releases/download/$version/app.7z"
-                ],
-                "hash": [
-                    {
-                        "url": "https://github.com/Fndroid/clash_for_windows_pkg/releases/download/$version/sha256sum",
-                        "mode": "extract",
-                        "regex": "(?m)^arm64-7z: $sha256"
-                    },
-                    {
-                        "url": "https://github.com/BoyceLig/Clash_Chinese_Patch/releases/download/$version/sha256sum",
-                        "mode": "extract",
-                        "regex": "app.7z: $sha256"
-                    }
-                ]
-            }
-        }
-    }
+    "persist": "data"
 }
