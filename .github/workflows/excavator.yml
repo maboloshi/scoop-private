@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@main
       - name: Excavate
-        uses: ScoopInstaller/GithubActions@main
+        uses: maboloshi/GithubActions@dev
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SKIP_UPDATED: 1
