@@ -10,10 +10,6 @@
         "64bit": {
             "url": "https://github.com/brave/brave-browser/releases/download/v1.60.125/brave-v1.60.125-win32-x64.zip",
             "hash": "d35effe17e5d59dfb230d2ab8d843abd9ad0cb908a941f884487c8c31f1c814b"
-        },
-        "32bit": {
-            "url": "https://github.com/brave/brave-browser/releases/download/v1.60.125/brave-v1.60.125-win32-ia32.zip",
-            "hash": "48adb7e9cbad951807e94238c7c564533bd4d3b74ee583a45f8c76eaa80353ee"
         }
     },
     "bin": [
@@ -52,9 +48,6 @@
         "architecture": {
             "64bit": {
                 "url": "https://github.com/brave/brave-browser/releases/download/v$version/brave-v$version-win32-x64.zip"
-            },
-            "32bit": {
-                "url": "https://github.com/brave/brave-browser/releases/download/v$version/brave-v$version-win32-ia32.zip"
             }
         },
         "hash": {
