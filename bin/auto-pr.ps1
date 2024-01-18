@@ -127,10 +127,10 @@ if ($IsLinux -or $IsMacOS) {
         exit 1
     }
 } else {
-    if (!(where.exe gh) && !(scoop which gh)) {
-        Write-Host "Please install gh 'scoop install gh'" -ForegroundColor Yellow
-        exit 1
-    }
+    # if (!(where.exe gh) && !(scoop which gh)) {
+    #     Write-Host "Please install gh 'scoop install gh'" -ForegroundColor Yellow
+    #     exit 1
+    # }
 }
 
 function execute($cmd) {
