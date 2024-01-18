@@ -45,8 +45,7 @@ jobs:
           .\my_bucket\bin\auto-pr.ps1 `
             -Push `
             -Bot `
-            -TOKEN $env:GITHUB_TOKEN `
-            -SkipUpdated  ($env:SKIP_UPDATED -eq '1')
+            -TOKEN $env:GITHUB_TOKEN
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
