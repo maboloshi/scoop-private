@@ -127,7 +127,7 @@ if ($IsLinux -or $IsMacOS) {
         exit 1
     }
 } else {
-    if (!(scoop which gh)) {
+    if (!(which gh) && !(scoop which gh)) {
         Write-Host "Please install gh 'scoop install gh'" -ForegroundColor Yellow
         exit 1
     }
