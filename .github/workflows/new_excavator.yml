@@ -21,7 +21,7 @@ jobs:
       # - name: Checkout
       - name: Checkout Bucket
         uses: actions/checkout@v4
-        # with:
+        with:
         #   fetch-depth: 2
           path: my_bucket
       - name: Checkout Scoop
