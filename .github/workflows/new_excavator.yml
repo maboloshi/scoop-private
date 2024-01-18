@@ -42,7 +42,8 @@ jobs:
         shell: pwsh
         run: |
           $env:SCOOP_HOME="$(Convert-Path '.\scoop_core')"
-          .\my_bucket\bin\auto-pr.ps1 `
+          cd .\my_bucket
+          .\bin\auto-pr.ps1 `
             -Push `
             -Bot `
             -TOKEN $env:GITHUB_TOKEN
