@@ -48,7 +48,7 @@ jobs:
             -Bot `
             -Upstream "maboloshi/scoop-private:dev" `
             -OriginBranch dev `
-            -TOKEN $env:GITHUB_TOKEN
+            -TOKEN ${{ secrets.GITHUB_TOKEN }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
