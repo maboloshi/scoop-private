@@ -302,7 +302,7 @@ if ($SpecialSnowflakes) {
     }
 }
 
-hub diff --name-only | ForEach-Object {
+git diff --name-only | ForEach-Object {
     $manifest = $_
     if (!$manifest.EndsWith('.json')) {
         return
