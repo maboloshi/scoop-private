@@ -81,7 +81,7 @@ param(
 )
 
 if (-not $OriginRepoNwo) {
-    $OriginRepoNwo = if ($env:GITHUB_REPOSITORY) { $env:GITHUB_REPOSITORY } else { (git remote get-url origin -replace '\.git').Split('/')[-2,-1] -join '/' }
+    $OriginRepoNwo = if ($env:GITHUB_REPOSITORY) { $env:GITHUB_REPOSITORY } else { ((git remote get-url origin) -replace '\.git').Split('/')[-2,-1] -join '/' }
 }
 
 if (!$env:SCOOP_HOME) { $env:SCOOP_HOME = Convert-Path (scoop prefix scoop) }
@@ -121,17 +121,17 @@ Optional options:
 }
 
 # 使用 git 和 gh 代替 hub
-# if ($IsLinux -or $IsMacOS) {
-#     if (!(which gh)) {
-#         Write-Host "Please install gh ('brew install gh' or visit: https://cli.github.com/)" -ForegroundColor Yellow
-#         exit 1
-#     }
-# } else {
-#     if (!(which gh) && !(scoop which gh)) {
-#         Write-Host "Please install gh 'scoop install gh'" -ForegroundColor Yellow
-#         exit 1
-#     }
-# }
+if ($IsLinux -or $IsMacOS) {
+    if (!(which gh)) {
+        Write-Host "Please install gh ('brew install gh' or visit: https://cli.github.com/)" -ForegroundColor Yellow
+        exit 1
+    }
+} else {
+    if (!(where.exe gh) && !(scoop which gh)) {
+        Write-Host "Please install gh 'scoop install gh'" -ForegroundColor Yellow
+        exit 1
+    }
+}
 
 function execute($cmd) {
     Write-Host $cmd -ForegroundColor Green
