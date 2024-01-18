@@ -46,8 +46,8 @@ jobs:
           .\bin\auto-pr.ps1 `
             -Push `
             -Bot `
-            -Upstream "$env:GITHUB_REPOSITORY:$env:GITHUB_REF_NAME" `
-            -OriginBranch $env:GITHUB_REF_NAME `
+            -Upstream "maboloshi/scoop-private:dev" `
+            -OriginBranch dev `
             -TOKEN $env:GITHUB_TOKEN
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
