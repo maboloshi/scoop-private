@@ -43,8 +43,8 @@ jobs:
         run: |
           $env:SCOOP_HOME="$(Convert-Path '.\scoop_core')"
           .\my_bucket\bin\auto-pr.ps1 `
-            -Push $true `
-            -Bot $true `
+            -Push `
+            -Bot `
             -TOKEN $env:GITHUB_TOKEN `
             -SkipUpdated  ($env:SKIP_UPDATED -eq '1')
         env:
