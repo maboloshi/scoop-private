@@ -1,0 +1,53 @@
+on:
+  workflow_dispatch:
+  schedule:
+    # run every 4 hours
+    - cron: '20 */4 * * *'
+name: New Excavator
+jobs:
+  excavate:
+    # name: Excavate
+    # runs-on: windows-latest
+    # steps:
+    #   - uses: actions/checkout@main
+    #   - name: Excavate
+    #     uses: maboloshi/GithubActions@main
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #       SKIP_UPDATED: 1
+    name: Excavate
+    runs-on: windows-latest
+    steps:
+      # - name: Checkout
+      - name: Checkout Bucket
+        uses: actions/checkout@v4
+        # with:
+        #   fetch-depth: 2
+          path: my_bucket
+      - name: Checkout Scoop
+        uses: actions/checkout@v4
+        with:
+          repository: ScoopInstaller/Scoop
+          path: scoop_core
+      # - name: Init Test Suite
+      #   uses: potatoqualitee/psmodulecache@v6.0
+      #   with:
+      #     modules-to-cache: BuildHelpers
+      #     shell: pwsh
+      # - name: Install Scoop, hub
+      #   shell: pwsh
+      #   run: |
+
+      - name: Excavate
+        shell: pwsh
+        run: |
+          $env:SCOOP_HOME="$(Convert-Path '.\scoop_core')"
+          .\my_bucket\bin\auto-pr.ps1 `
+            -Push $true `
+            -Bot $true `
+            -TOKEN $env:GITHUB_TOKEN `
+            -SkipUpdated  ($env:SKIP_UPDATED -eq '1')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
