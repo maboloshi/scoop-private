@@ -46,7 +46,7 @@ jobs:
           .\bin\auto-pr.ps1 `
             -Push `
             -Bot `
-            -Upstream $env:GITHUB_REPOSITORY `
+            -Upstream "$env:GITHUB_REPOSITORY:$env:GITHUB_REF_NAME" `
             -OriginBranch $env:GITHUB_REF_NAME `
             -TOKEN $env:GITHUB_TOKEN
         env:
