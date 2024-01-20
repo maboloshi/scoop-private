@@ -44,7 +44,7 @@ jobs:
           $env:SCOOP_HOME="$(Convert-Path '.\scoop_core')"
           cd .\my_bucket
           .\bin\auto-pr.ps1 `
-            -Push `
+            -Request `
             -Bot `
             -Upstream "${{ github.repository }}:${{ github.ref_name }}" `
             -OriginBranch "${{ github.ref_name }}" `
