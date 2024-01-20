@@ -120,17 +120,18 @@ Optional options:
     exit 0
 }
 
-# 使用 git 和 gh 代替 hub
-if ($IsLinux -or $IsMacOS) {
-    if (!(which gh)) {
-        Write-Host "Please install gh ('brew install gh' or visit: https://cli.github.com/)" -ForegroundColor Yellow
-        exit 1
+if (!$env:GITHUB_ACTIONS) {
+    if ($IsLinux -or $IsMacOS) {
+        if (!(which gh)) {
+            Write-Host "Please install gh ('brew install gh' or visit: https://cli.github.com/)" -ForegroundColor Yellow
+            exit 1
+        }
+    } else {
+        if (!(scoop which gh)) {
+            Write-Host "Please install gh 'scoop install gh'" -ForegroundColor Yellow
+            exit 1
+        }
     }
-} else {
-    # if (!(where.exe gh) && !(scoop which gh)) {
-    #     Write-Host "Please install gh 'scoop install gh'" -ForegroundColor Yellow
-    #     exit 1
-    # }
 }
 
 function execute($cmd) {
