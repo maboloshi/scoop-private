@@ -82,6 +82,7 @@ param(
 if (-not $OriginRepoNwo) {
     $OriginRepoNwo = if ($env:GITHUB_REPOSITORY) { $env:GITHUB_REPOSITORY } else { ((git remote get-url origin) -replace '\.git').Split('/')[-2,-1] -join '/' }
 }
+$OriginOwner = $OriginRepoNwo.Split('/')[0]
 
 if (!$env:SCOOP_HOME) { $env:SCOOP_HOME = Convert-Path (scoop prefix scoop) }
 . (Join-Path $env:SCOOP_HOME "lib\core.ps1")
@@ -148,6 +149,7 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
     $version = $json.version
     $homepage = $json.homepage
     $branch = "manifest/$app-$version"
+    $UpstreamRepoNwo, $UpstreamBranch = $Upstream -split ':'
 
     execute "git checkout $OriginBranch"
     # Detecting the existence of the "manifest/$app-$version" remote branch
@@ -157,41 +159,42 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
     # Skip if "manifest/$app-$version" remote branch already exists
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Skipping update $app ($version) ..." -ForegroundColor Yellow
-        return
-    }
-
-    execute "git checkout -b $branch"
-    execute "git push origin $branch"
-
-    if ($Bot) {
-        Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
-        $response = graphql_commit_push -t $TOKEN -RepoNwo $OriginRepoNwo -b $branch -f $manifest `
-         -MessageTitle $CommitMessage `
-         -MessageBody 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>' `
-         -ParentSHA $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
-
-        if (!$response.data.createCommitOnBranch.commit.url) {
-            error "Commit and push $app ($version) via the GitHub GraphQL API failed! (`n'$( $response | ConvertTo-Json -Depth 100 )'`n)"
-            execute 'git reset'
-            return
-        }
+        # return
     } else {
-        Write-Host "Creating update $app ($version) ..." -ForegroundColor DarkCyan
-        execute "git add $manifest"
-        execute "git commit -m '$commitMessage"
-        Write-Host "Pushing update $app ($version) ..." -ForegroundColor DarkCyan
+
+        execute "git checkout -b $branch"
         execute "git push origin $branch"
 
-        if ($LASTEXITCODE -gt 0) {
-            error "Push failed! (git push origin $branch)"
-            execute 'git reset'
-            return
+        if ($Bot) {
+            Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
+            $response = graphql_commit_push -t $TOKEN -RepoNwo $OriginRepoNwo -b $branch -f $manifest `
+             -MessageTitle $CommitMessage `
+             -MessageBody 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>' `
+             -ParentSHA $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
+
+            if (!$response.data.createCommitOnBranch.commit.url) {
+                error "Commit and push $app ($version) via the GitHub GraphQL API failed! (`n'$( $response | ConvertTo-Json -Depth 100 )'`n)"
+                execute 'git reset'
+                return
+            }
+        } else {
+            Write-Host "Creating update $app ($version) ..." -ForegroundColor DarkCyan
+            execute "git add $manifest"
+            execute "git commit -m '$commitMessage"
+            Write-Host "Pushing update $app ($version) ..." -ForegroundColor DarkCyan
+            execute "git push origin $branch"
+
+            if ($LASTEXITCODE -gt 0) {
+                error "Push failed! (git push origin $branch)"
+                execute 'git reset'
+                return
+            }
         }
     }
 
     Start-Sleep 1
     Write-Host "Pull-Request update $app ($version) ..." -ForegroundColor DarkCyan
-    Write-Host "gh pr create -t '<MessageTitle>' -b '<MessageBody>' -B '$upstream' -H '${OriginRepoNwo}:$branch'" -ForegroundColor Green
+    Write-Host "gh pr create -t '<MessageTitle>' -b '<MessageBody>' -R '$UpstreamRepoNwo' -B '$UpstreamBranch' -H '$OriginOwner:$branch'" -ForegroundColor Green
 
     $MessageTitle = $commitMessage
     $MessageBody = @"
@@ -203,10 +206,10 @@ a new version of [$app]($homepage) is available.
 | New version | $version        |
 "@
 
-    gh pr create -t $MessageTitle -b $MessageBody -B "$upstream" -H "$branch"
+    gh pr create -t "$MessageTitle" -b "$MessageBody" -R "$UpstreamRepoNwo" -B "$UpstreamBranch" -H "$OriginOwner:$branch"
     if ($LASTEXITCODE -gt 0) {
         execute 'git reset'
-        abort "Pull Request failed! (gh pr create -t '$MessageTitle' -b '$MessageBody' -B '$upstream' -H '$branch')"
+        abort "Pull Request failed! (gh pr create -t '$MessageTitle' -b '$MessageBody' -R '$UpstreamRepoNwo' -B '$UpstreamBranch' -H '$OriginOwner:$branch')"
     }
 }
 
@@ -341,8 +344,8 @@ git diff --name-only | ForEach-Object {
             Write-Host "Skipping $app because only LF/CRLF changes were detected ..." -ForegroundColor Yellow
         }
     } elseif ($Request) {
-        # pull_requests $json $app $Upstream $manifest $CommitMessage
-        pull_requests $json $app "upstream:$UpstreamBranch" $manifest $CommitMessage
+        pull_requests $json $app $Upstream $manifest $CommitMessage
+        # pull_requests $json $app "upstream/$UpstreamBranch" $manifest $CommitMessage
     }
 }
 
