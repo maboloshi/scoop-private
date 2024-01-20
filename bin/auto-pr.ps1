@@ -194,7 +194,7 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
 
     Start-Sleep 1
     Write-Host "Pull-Request update $app ($version) ..." -ForegroundColor DarkCyan
-    Write-Host "gh pr create -t '<MessageTitle>' -b '<MessageBody>' -R '$UpstreamRepoNwo' -B '$UpstreamBranch' -H '$OriginOwner:$branch'" -ForegroundColor Green
+    Write-Host "gh pr create -t '<MessageTitle>' -b '<MessageBody>' -R '$UpstreamRepoNwo' -B '$UpstreamBranch' -H '${OriginOwner}:${branch}'" -ForegroundColor Green
 
     $MessageTitle = $commitMessage
     $MessageBody = @"
@@ -206,10 +206,10 @@ a new version of [$app]($homepage) is available.
 | New version | $version        |
 "@
 
-    gh pr create -t "$MessageTitle" -b "$MessageBody" -R "$UpstreamRepoNwo" -B "$UpstreamBranch" -H "$OriginOwner:$branch"
+    gh pr create -t "$MessageTitle" -b "$MessageBody" -R "$UpstreamRepoNwo" -B "$UpstreamBranch" -H "${OriginOwner}:${branch}"
     if ($LASTEXITCODE -gt 0) {
         execute 'git reset'
-        abort "Pull Request failed! (gh pr create -t '$MessageTitle' -b '$MessageBody' -R '$UpstreamRepoNwo' -B '$UpstreamBranch' -H '$OriginOwner:$branch')"
+        abort "Pull Request failed! (gh pr create -t '$MessageTitle' -b '$MessageBody' -R '$UpstreamRepoNwo' -B '$UpstreamBranch' -H '${OriginOwner}:${branch}')"
     }
 }
 
