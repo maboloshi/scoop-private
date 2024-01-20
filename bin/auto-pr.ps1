@@ -342,7 +342,7 @@ git diff --name-only | ForEach-Object {
         }
     } elseif ($Request) {
         # pull_requests $json $app $Upstream $manifest $CommitMessage
-        pull_requests $json $app "upstream/$UpstreamBranch" $manifest $CommitMessage
+        pull_requests $json $app "upstream:$UpstreamBranch" $manifest $CommitMessage
     }
 }
 
