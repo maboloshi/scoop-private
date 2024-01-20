@@ -203,10 +203,10 @@ a new version of [$app]($homepage) is available.
 | New version | $version        |
 "@
 
-    gh pr create -t $MessageTitle -b $MessageBody -B "$upstream" -H "${OriginRepoNwo}:$branch"
+    gh pr create -t $MessageTitle -b $MessageBody -B "$upstream" -H "$branch"
     if ($LASTEXITCODE -gt 0) {
         execute 'git reset'
-        abort "Pull Request failed! (gh pr create -t '$MessageTitle' -b '$MessageBody' -B '$upstream' -H '${OriginRepoNwo}:$branch')"
+        abort "Pull Request failed! (gh pr create -t '$MessageTitle' -b '$MessageBody' -B '$upstream' -H '$branch')"
     }
 }
 
@@ -341,7 +341,8 @@ git diff --name-only | ForEach-Object {
             Write-Host "Skipping $app because only LF/CRLF changes were detected ..." -ForegroundColor Yellow
         }
     } elseif ($Request) {
-        pull_requests $json $app $Upstream $manifest $CommitMessage
+        # pull_requests $json $app $Upstream $manifest $CommitMessage
+        pull_requests $json $app "upstream/$UpstreamBranch" $manifest $CommitMessage
     }
 }
 
