@@ -44,7 +44,6 @@
 #>
 
 param(
-    # overwrite upstream param
     [ValidateScript( {
         if (!($_ -match '^(.*)\/(.*):(.*)$')) {
             throw 'Upstream must be in this format: <user>/<repo>:<branch>'
@@ -192,7 +191,6 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
 
     Start-Sleep 1
     Write-Host "Pull-Request update $app ($version) ..." -ForegroundColor DarkCyan
-    # Write-Host "hub pull-request -m '<msg>' -b '$upstream' -h '${OriginRepoNwo}:$branch'" -ForegroundColor Green
     Write-Host "gh pr create -t '<MessageTitle>' -b '<MessageBody>' -B '$upstream' -H '${OriginRepoNwo}:$branch'" -ForegroundColor Green
 
     $MessageTitle = $commitMessage
@@ -205,11 +203,9 @@ a new version of [$app]($homepage) is available.
 | New version | $version        |
 "@
 
-    # hub pull-request -m "$msg" -b "$upstream" -h "${OriginRepoNwo}:$branch"
     gh pr create -t $MessageTitle -b $MessageBody -B "$upstream" -H "${OriginRepoNwo}:$branch"
     if ($LASTEXITCODE -gt 0) {
         execute 'git reset'
-        # abort "Pull Request failed! (hub pull-request -m '$commitMessage' -b '$upstream' -h '${OriginRepoNwo}:$branch')"
         abort "Pull Request failed! (gh pr create -t '$MessageTitle' -b '$MessageBody' -B '$upstream' -H '${OriginRepoNwo}:$branch')"
     }
 }
