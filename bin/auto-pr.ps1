@@ -159,36 +159,35 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
     # Skip if "manifest/$app-$version" remote branch already exists
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Skipping update $app ($version) ..." -ForegroundColor Yellow
-        # return
-    } else {
+        return
+    }
 
-        execute "git checkout -b $branch"
+    execute "git checkout -b $branch"
+    execute "git push origin $branch"
+
+    if ($Bot) {
+        Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
+        $response = graphql_commit_push -t $TOKEN -RepoNwo $OriginRepoNwo -b $branch -f $manifest `
+         -MessageTitle $CommitMessage `
+         -MessageBody 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>' `
+         -ParentSHA $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
+
+        if (!$response.data.createCommitOnBranch.commit.url) {
+            error "Commit and push $app ($version) via the GitHub GraphQL API failed! (`n'$( $response | ConvertTo-Json -Depth 100 )'`n)"
+            execute 'git reset'
+            return
+        }
+    } else {
+        Write-Host "Creating update $app ($version) ..." -ForegroundColor DarkCyan
+        execute "git add $manifest"
+        execute "git commit -m '$commitMessage"
+        Write-Host "Pushing update $app ($version) ..." -ForegroundColor DarkCyan
         execute "git push origin $branch"
 
-        if ($Bot) {
-            Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
-            $response = graphql_commit_push -t $TOKEN -RepoNwo $OriginRepoNwo -b $branch -f $manifest `
-             -MessageTitle $CommitMessage `
-             -MessageBody 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>' `
-             -ParentSHA $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
-
-            if (!$response.data.createCommitOnBranch.commit.url) {
-                error "Commit and push $app ($version) via the GitHub GraphQL API failed! (`n'$( $response | ConvertTo-Json -Depth 100 )'`n)"
-                execute 'git reset'
-                return
-            }
-        } else {
-            Write-Host "Creating update $app ($version) ..." -ForegroundColor DarkCyan
-            execute "git add $manifest"
-            execute "git commit -m '$commitMessage"
-            Write-Host "Pushing update $app ($version) ..." -ForegroundColor DarkCyan
-            execute "git push origin $branch"
-
-            if ($LASTEXITCODE -gt 0) {
-                error "Push failed! (git push origin $branch)"
-                execute 'git reset'
-                return
-            }
+        if ($LASTEXITCODE -gt 0) {
+            error "Push failed! (git push origin $branch)"
+            execute 'git reset'
+            return
         }
     }
 
