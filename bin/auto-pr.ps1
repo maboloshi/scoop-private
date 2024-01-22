@@ -134,20 +134,16 @@ function execute($cmd) {
 function create_pull_request {
     param (
         # Remote repository name with owner requested by the GitHub GraphQL API
-        [Alias('R')]
         [String] $RepoNwo,
         # Repository branch name requested by the GitHub GraphQL API
-        [Alias('t')]
+        [Alias('title')]
         [String] $MessageTitle,
         # Commit message body committed via the GitHub GraphQL API
-        [Alias('b')]
+        [Alias('body')]
         [String] $MessageBody = '',
         # TOKEN for authentication via the GitHub GraphQL API
-        [Alias('H')]
         [String] $Head,
-        [Alias('B')]
         [String] $Base,
-        [Alias('T')]
         [String] $Token
     )
 
@@ -192,10 +188,10 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
 
     if ($Bot) {
         Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
-        $response = graphql_commit_push -t $TOKEN -RepoNwo $OriginRepoNwo -b $branch -f $manifest `
-         -MessageTitle $CommitMessage `
-         -MessageBody 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>' `
-         -ParentSHA $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
+        $response = graphql_commit_push -t $TOKEN -R $OriginRepoNwo -B $branch -f $manifest `
+         -Title $CommitMessage `
+         -Body 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>' `
+         -p $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
 
         if (!$response.data.createCommitOnBranch.commit.url) {
             error "Commit and push $app ($version) via the GitHub GraphQL API failed! (`n'$( $response | ConvertTo-Json -Depth 100 )'`n)"
@@ -229,7 +225,7 @@ a new version of [$app]($homepage) is available.
 | New version | $version        |
 "@
 
-    $response = create_pull_request -T $TOKEN -t $MessageTitle -b $MessageBody -R $UpstreamRepoNwo -B $UpstreamBranch  -H "${OriginOwner}:${branch}"
+    $response = create_pull_request -T $TOKEN -Title $MessageTitle -Body $MessageBody -R $UpstreamRepoNwo -B $UpstreamBranch  -H "${OriginOwner}:${branch}"
 
     if (!$response.html_url) {
         execute 'git reset'
@@ -241,26 +237,21 @@ function graphql_commit_push {
     # Note that you cannot push to an empty branch
     param (
         # Remote repository name with owner requested by the GitHub GraphQL API
-        [Alias('R')]
         [String] $RepoNwo,
         # Repository branch name requested by the GitHub GraphQL API
-        [Alias('B')]
         [String] $Branch,
         # Name of the file committed via the GitHub GraphQL API (relative to the repository root)
-        [Alias('f')]
         [String] $FilePath,
         # Commit message head line committed via the GitHub GraphQL API
-        [Alias('t')]
+        [Alias('title')]
         [String] $MessageTitle,
         # Commit message body committed via the GitHub GraphQL API
-        [Alias('b')]
+        [Alias('body')]
         [String] $MessageBody = '',
         # TOKEN for authentication via the GitHub GraphQL API
-        [Alias('T')]
         [String] $Token,
         # The sha of the last commit on the target branch of the remote repository.
         # It is also the SHA of the parent commit of the commit about to be created.
-        [Alias('p')]
         [String] $ParentSHA
     )
 
@@ -358,8 +349,8 @@ git diff --name-only | ForEach-Object {
             if ($Bot) {
                 Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
                 $response = graphql_commit_push -T $TOKEN -R $OriginRepoNwo -B $OriginBranch -f $manifest `
-                 -t $CommitMessage `
-                 -b 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>' `
+                 -Title $CommitMessage `
+                 -Body 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>' `
                  -p $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
 
                 if ($response.data.createCommitOnBranch.commit.url) {
