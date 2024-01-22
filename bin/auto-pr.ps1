@@ -120,20 +120,6 @@ Optional options:
     exit 0
 }
 
-if (!$env:GITHUB_ACTIONS) {
-    if ($IsLinux -or $IsMacOS) {
-        if (!(which gh)) {
-            Write-Host "Please install gh ('brew install gh' or visit: https://cli.github.com/)" -ForegroundColor Yellow
-            exit 1
-        }
-    } else {
-        if (!(scoop which gh)) {
-            Write-Host "Please install gh 'scoop install gh'" -ForegroundColor Yellow
-            exit 1
-        }
-    }
-}
-
 function execute($cmd) {
     Write-Host $cmd -ForegroundColor Green
     $output = Invoke-Command ([scriptblock]::Create($cmd))
@@ -144,6 +130,45 @@ function execute($cmd) {
 
     return $output
 }
+
+function create_pull_request {
+    param (
+        # Remote repository name with owner requested by the GitHub GraphQL API
+        [Alias('R')]
+        [String] $RepoNwo,
+        # Repository branch name requested by the GitHub GraphQL API
+        [Alias('t')]
+        [String] $MessageTitle,
+        # Commit message body committed via the GitHub GraphQL API
+        [Alias('b')]
+        [String] $MessageBody = '',
+        # TOKEN for authentication via the GitHub GraphQL API
+        [Alias('H')]
+        [String] $Head,
+        [Alias('B')]
+        [String] $Base,
+        [Alias('T')]
+        [String] $Token
+    )
+
+    if ($env:GITHUB_API_URL) {
+        $baseUrl = $env:GITHUB_API_URL
+    } else {
+        $baseUrl = 'https://api.github.com'
+    }
+
+    $headers = @{ "Authorization" = "bearer $Token" }
+
+    $query = @{
+        'title' = "$MessageTitle"
+        'body'  = "$MessageBody"
+        'head'  = "$Head"
+        'base'  = "$Base"
+    } | ConvertTo-Json -Compress
+
+    Write-Host "Invoke-RestMethod -Method Post -Uri '$baseUrl/repos/$RepoNwo/pulls' -Headers $headers -Body $query" -ForegroundColor Green
+    return Invoke-RestMethod -Method Post -Uri "$baseUrl/repos/$RepoNwo/pulls" -Headers $headers -Body $query
+ }
 
 function pull_requests($json, [String] $app, [String] $upstream, [String] $manifest, [String] $commitMessage) {
     $version = $json.version
@@ -193,7 +218,6 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
 
     Start-Sleep 1
     Write-Host "Pull-Request update $app ($version) ..." -ForegroundColor DarkCyan
-    Write-Host "gh pr create -t '<MessageTitle>' -b '<MessageBody>' -R '$UpstreamRepoNwo' -B '$UpstreamBranch' -H '${OriginOwner}:${branch}'" -ForegroundColor Green
 
     $MessageTitle = $commitMessage
     $MessageBody = @"
@@ -205,10 +229,11 @@ a new version of [$app]($homepage) is available.
 | New version | $version        |
 "@
 
-    gh pr create -t "$MessageTitle" -b "$MessageBody" -R "$UpstreamRepoNwo" -B "$UpstreamBranch" -H "${OriginOwner}:${branch}"
-    if ($LASTEXITCODE -gt 0) {
+    $response = create_pull_request -T $TOKEN -t $MessageTitle -b $MessageBody -R $UpstreamRepoNwo -B $UpstreamBranch  -H "${OriginOwner}:${branch}"
+
+    if (!$response.html_url) {
         execute 'git reset'
-        abort "Pull Request failed! (gh pr create -t '$MessageTitle' -b '$MessageBody' -R '$UpstreamRepoNwo' -B '$UpstreamBranch' -H '${OriginOwner}:${branch}')"
+        abort "Pull Request failed! ( (`n'$( $response | ConvertTo-Json -Depth 100 )'`n)"
     }
 }
 
@@ -216,19 +241,26 @@ function graphql_commit_push {
     # Note that you cannot push to an empty branch
     param (
         # Remote repository name with owner requested by the GitHub GraphQL API
+        [Alias('R')]
         [String] $RepoNwo,
         # Repository branch name requested by the GitHub GraphQL API
+        [Alias('B')]
         [String] $Branch,
         # Name of the file committed via the GitHub GraphQL API (relative to the repository root)
+        [Alias('f')]
         [String] $FilePath,
         # Commit message head line committed via the GitHub GraphQL API
+        [Alias('t')]
         [String] $MessageTitle,
         # Commit message body committed via the GitHub GraphQL API
+        [Alias('b')]
         [String] $MessageBody = '',
         # TOKEN for authentication via the GitHub GraphQL API
+        [Alias('T')]
         [String] $Token,
         # The sha of the last commit on the target branch of the remote repository.
         # It is also the SHA of the parent commit of the commit about to be created.
+        [Alias('p')]
         [String] $ParentSHA
     )
 
@@ -239,6 +271,8 @@ function graphql_commit_push {
     }
     # Note that the line breaks in the cummitted file are LF style
     $encoded_file_content = (Get-Content -Path $FilePath -Raw -Encoding UTF8) -replace "`r`n", "`n" | ForEach-Object { [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($_)) }
+
+    $headers = @{ "Authorization" = "bearer $Token" }
 
     $query = @"
     {
@@ -267,10 +301,8 @@ function graphql_commit_push {
     }
 "@
 
-    $headers = @{ "Authorization" = "bearer $Token" }
-
-    Write-Host "Invoke-RestMethod -Method Post -Uri $GITHUB_GRAPHQL_URL -ContentType 'application/json' -Headers $headers -Body $query"
-    Invoke-RestMethod -Method Post -Uri $GITHUB_GRAPHQL_URL -ContentType 'application/json' -Headers $headers -Body $query
+    Write-Host "Invoke-RestMethod -Method Post -Uri $GITHUB_GRAPHQL_URL -ContentType 'application/json' -Headers $headers -Body $query" -ForegroundColor Green
+    return Invoke-RestMethod -Method Post -Uri $GITHUB_GRAPHQL_URL -ContentType 'application/json' -Headers $headers -Body $query
 }
 
 Write-Host 'Updating ...' -ForegroundColor DarkCyan
@@ -325,10 +357,10 @@ git diff --name-only | ForEach-Object {
         if ($status -and $status.StartsWith('M  ') -and $status.EndsWith("$app.json")) {
             if ($Bot) {
                 Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
-                $response = graphql_commit_push -t $TOKEN -RepoNwo $OriginRepoNwo -b $OriginBranch -f $manifest `
-                 -MessageTitle $CommitMessage `
-                 -MessageBody 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>' `
-                 -ParentSHA $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
+                $response = graphql_commit_push -T $TOKEN -R $OriginRepoNwo -B $OriginBranch -f $manifest `
+                 -t $CommitMessage `
+                 -b 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>' `
+                 -p $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
 
                 if ($response.data.createCommitOnBranch.commit.url) {
                     execute "git fetch origin $OriginBranch"
@@ -344,7 +376,6 @@ git diff --name-only | ForEach-Object {
         }
     } elseif ($Request) {
         pull_requests $json $app $Upstream $manifest $CommitMessage
-        # pull_requests $json $app "upstream/$UpstreamBranch" $manifest $CommitMessage
     }
 }
 
