@@ -133,21 +133,21 @@ function execute($cmd) {
 
 function create_pull_request {
     param (
-        # Remote repository name with owner requested by the GitHub API
+        # The remote repository (with owner) into which you want your code merged by the GitHub API
         [String] $RepoNwo,
-        # Pull request message title created via the GitHub API
+        # Pull request's message title created via the GitHub API
         [String] $MessageTitle,
-        # Pull request message body created via the GitHub API
+        # Pull request's message body created via the GitHub API
         [String] $MessageBody = '',
-        # The base branch that contains commits for your pull request
+        # The base branch into which you want your code merged
+        [String] $Base,
+        # The head branch that contains commits for your pull request
         [ValidateScript( {
             if (!($_ -match '^(.*):(.*)$')) {
-                throw 'Base branch must be in this format: <user>:<branch>'
+                throw 'Head branch must be in this format: <user>:<branch>'
             }
             $true
         })]
-        [String] $Base,
-        # The head branch into which you want your code merged
         [String] $Head,
         # TOKEN for authentication via the GitHub API
         [String] $Token
