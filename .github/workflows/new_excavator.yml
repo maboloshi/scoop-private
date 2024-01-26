@@ -1,0 +1,32 @@
+on:
+  workflow_dispatch:
+  schedule:
+    # run every 4 hours
+    - cron: '20 */4 * * *'
+name: New Excavator
+jobs:
+  excavate:
+
+    name: Excavate
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Bucket
+        uses: actions/checkout@v4
+        with:
+          path: my_bucket
+      - name: Checkout Scoop
+        uses: actions/checkout@v4
+        with:
+          repository: ScoopInstaller/Scoop
+          path: scoop_core
+      - name: Excavate
+        shell: pwsh
+        run: |
+          $env:SCOOP_HOME="$(Convert-Path '.\scoop_core')"
+          cd .\my_bucket
+          .\bin\auto-pr.ps1 `
+            -Push `
+            -Bot `
+            -Upstream "${{ github.repository }}:${{ github.ref_name }}" `
+            -OriginBranch "${{ github.ref_name }}" `
+            -TOKEN ${{ secrets.GITHUB_TOKEN }}
