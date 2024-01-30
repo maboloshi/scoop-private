@@ -180,8 +180,6 @@ function Invoke-GithubRequest {
     $GITHUB_API_URL = if ($env:GITHUB_API_URL) { $env:GITHUB_API_URL } else { "https://api.github.com" }
     $GITHUB_GRAPHQL_URL = if ($env:GITHUB_GRAPHQL_URL) { $env:GITHUB_GRAPHQL_URL } else { "https://api.github.com/graphql" }
 
-    # $baseUrl = 'https://api.github.com'
-
     if ($Query -eq 'graphql') {
         $Url = "$GITHUB_GRAPHQL_URL"
     } else {
@@ -197,15 +195,15 @@ function Invoke-GithubRequest {
         'Uri'     = "$Url"
     }
 
-    Write-Log 'Github Request' $parameters
+    Write-Host 'Github Request' $parameters -ForegroundColor DarkCyan
 
     if ($Body) { $parameters.Add('Body', (ConvertTo-Json $Body -Depth 8 -Compress)) }
 
-    Write-Log 'Request Body' $parameters.Body
+    Write-Host 'Request Body' $parameters.Body -ForegroundColor DarkCyan
 
     $env:GH_REQUEST_COUNTER = ([int] $env:GH_REQUEST_COUNTER) + 1
 
-    return Invoke-WebRequest @parameters
+    return Invoke-RestMethod @parameters
 }
 
 function pull_requests($json, [String] $app, [String] $upstream, [String] $manifest, [String] $commitMessage) {
@@ -231,12 +229,12 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
     if ($Bot) {
         Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
         $response = execute "graphql_commit_push @{
-            RepoNwo   = $OriginRepoNwo
-            Branch    = $branch
-            FilePath  = $manifest
-            Title     = $CommitMessage
+            RepoNwo   = '$OriginRepoNwo'
+            Branch    = '$branch'
+            FilePath  = '$manifest'
+            Title     = '$CommitMessage'
             Body      = 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>'
-            ParentSHA = $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
+            ParentSHA = '$((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])'
         }"
         if (!$response.data.createCommitOnBranch.commit.url) {
             error "Commit and push $app ($version) via the GitHub GraphQL API failed! (`n'$( $response | ConvertTo-Json -Depth 100 )'`n)"
@@ -290,27 +288,26 @@ function graphql_commit_push($params) {
         variables = @{
             input = @{
                 branch = @{
-                    repositoryNameWithOwner = "$params.RepoNwo"
-                    branchName = "$params.Branch"
+                    repositoryNameWithOwner = $params.RepoNwo
+                    branchName = $params.Branch
                 }
                 message = @{
-                    headline = "$params.Title"
-                    body = "$params.Body"
+                    headline = $params.Title
+                    body = $params.Body
                 }
                 fileChanges = @{
                     additions = @(
                         @{
-                            path = "$params.FilePath"
-                            contents = "$EncodedFileContent"
+                            path = $params.FilePath
+                            contents = $EncodedFileContent
                         }
                     )
                 }
-                expectedHeadOid = "$params.ParentSHA"
+                expectedHeadOid = $params.ParentSHA
             }
         }
     }
 
-    # Write-Host "Invoke-GithubRequest 'graphql' -Method 'Post' -Body $Body" -ForegroundColor Green
     return Invoke-GithubRequest 'graphql' -Method 'Post' -Body $Body
 }
 
@@ -367,12 +364,12 @@ git diff --name-only | ForEach-Object {
             if ($Bot) {
                 Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
                 $response = execute "graphql_commit_push @{
-                    RepoNwo   = $OriginRepoNwo
-                    Branch    = $OriginBranch
-                    FilePath  = $manifest
-                    Title     = $commitMessage
+                    RepoNwo   = '$OriginRepoNwo'
+                    Branch    = '$OriginBranch'
+                    FilePath  = '$manifest'
+                    Title     = '$commitMessage'
                     Body      = 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>'
-                    ParentSHA = $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
+                    ParentSHA = '$((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])'
                 }"
                 if ($response.data.createCommitOnBranch.commit.url) {
                     execute "git fetch origin $OriginBranch"
