@@ -42,14 +42,12 @@ jobs:
         shell: pwsh
         run: |
           $env:SCOOP_HOME="$(Convert-Path '.\scoop_core')"
-          cd .\my_bucket
-          .\bin\auto-pr.ps1 `
-            -Request `
+          .\my_bucket\bin\auto-pr.ps1 `
+            -Push `
             -Bot `
             -Upstream "${{ github.repository }}:${{ github.ref_name }}" `
             -OriginBranch "${{ github.ref_name }}" `
-            -TOKEN ${{ secrets.GITHUB_TOKEN }}
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
