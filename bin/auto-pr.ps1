@@ -214,8 +214,8 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
 
     execute "git checkout $OriginBranch"
     # Detecting the existence of the "manifest/$app-$version" remote branch
-    Write-Host "git ls-remote --exit-code origin $branch" -ForegroundColor Green
-    git ls-remote --exit-code origin $branch
+    # Write-Host "git ls-remote --exit-code origin $branch" -ForegroundColor Green
+    execute "git ls-remote --exit-code origin $branch"
 
     # Skip if "manifest/$app-$version" remote branch already exists
     if ($LASTEXITCODE -eq 0) {
@@ -223,10 +223,14 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
         return
     }
 
-    execute "git checkout -b $branch"
-    execute "git push origin $branch"
-
     if ($Bot) {
+        Write-Host "Create remote branch 'manifest/$app-$version'" -ForegroundColor Green
+        $ParentSHA = $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
+        execute "Invoke-GithubRequest -Query 'repos/$UpstreamRepoNwo/git/refs' -Method Post -Body @{
+            ref = 'refs/heads/$branch'
+            sha = '$ParentSHA'
+        }"
+
         Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
         $response = execute "graphql_commit_push @{
             RepoNwo   = '$OriginRepoNwo'
@@ -234,7 +238,7 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
             FilePath  = '$manifest'
             Title     = '$CommitMessage'
             Body      = 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>'
-            ParentSHA = '$((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])'
+            ParentSHA = '$ParentSHA'
         }"
         if (!$response.data.createCommitOnBranch.commit.url) {
             error "Commit and push $app ($version) via the GitHub GraphQL API failed! (`n'$( $response | ConvertTo-Json -Depth 100 )'`n)"
@@ -242,6 +246,9 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
             return
         }
     } else {
+        execute "git checkout -b $branch"
+        # execute "git push origin $branch"
+
         Write-Host "Creating update $app ($version) ..." -ForegroundColor DarkCyan
         execute "git add $manifest"
         execute "git commit -m '$commitMessage"
