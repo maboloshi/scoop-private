@@ -214,8 +214,8 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
 
     execute "git checkout $OriginBranch"
     # Detecting the existence of the "manifest/$app-$version" remote branch
-    # Write-Host "git ls-remote --exit-code origin $branch" -ForegroundColor Green
-    execute "git ls-remote --exit-code origin $branch"
+    Write-Host "git ls-remote --exit-code origin $branch" -ForegroundColor Green
+    git ls-remote --exit-code origin $branch
 
     # Skip if "manifest/$app-$version" remote branch already exists
     if ($LASTEXITCODE -eq 0) {
