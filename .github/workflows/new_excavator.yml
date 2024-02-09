@@ -17,6 +17,7 @@ jobs:
     #       SKIP_UPDATED: 1
     name: Excavate
     runs-on: windows-latest
+    environment: Excavator
     steps:
       - name: Generate a token
         id: generate_token
