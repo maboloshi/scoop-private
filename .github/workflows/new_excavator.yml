@@ -9,7 +9,14 @@ jobs:
 
     name: Excavate
     runs-on: windows-latest
+    environment: Excavator
     steps:
+      - name: Generate a token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Checkout Bucket
         uses: actions/checkout@v4
         with:
@@ -29,4 +36,4 @@ jobs:
             -Bot `
             -Upstream "${{ github.repository }}:${{ github.ref_name }}" `
             -OriginBranch "${{ github.ref_name }}" `
-            -TOKEN ${{ secrets.GITHUB_TOKEN }}
+            -TOKEN ${{ steps.generate_token.outputs.token }}
