@@ -22,10 +22,8 @@
     The directory where to search for manifests.
 .PARAMETER Push
     Push updates directly to 'origin branch'.
-.PARAMETER Bot
-    Use the GitHub GraphQL API for commit and push.
 .PARAMETER TOKEN
-    The bot needs to use TOKEN for login verification.
+    Used for the GitHub API authentication.
 .PARAMETER Request
     Create pull-requests on 'upstream branch' for each update.
 .PARAMETER Help
@@ -70,7 +68,6 @@ param(
     })]
     [String] $Dir = "$PSScriptRoot/../bucket", # checks the parent dir
     [Switch] $Push,
-    [Switch] $Bot,
     [String] $TOKEN,
     [Switch] $Request,
     [Switch] $Help,
@@ -192,7 +189,7 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
     execute "git checkout -b $branch"
     execute "git push origin $branch"
 
-    if ($Bot) {
+    if ($env:CI -and $TOKEN) {
         Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
         $response = graphql_commit_push -t $TOKEN -RepoNwo $OriginRepoNwo -b $branch -f $manifest `
          -MessageTitle $CommitMessage `
@@ -351,7 +348,7 @@ git diff --name-only | ForEach-Object {
         $status = execute "git status --porcelain -uno"
         $status = $status | Where-Object { $_ -match "M\s{2}.*$app.json" }
         if ($status -and $status.StartsWith('M  ') -and $status.EndsWith("$app.json")) {
-            if ($Bot) {
+            if ($env:CI -and $TOKEN) {
                 Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
                 $response = graphql_commit_push -t $TOKEN -RepoNwo $OriginRepoNwo -b $OriginBranch -f $manifest `
                  -MessageTitle $CommitMessage `
@@ -375,7 +372,7 @@ git diff --name-only | ForEach-Object {
     }
 }
 
-if ($Push -and !$Bot) {
+if ($Push -and !($env:CI -and $TOKEN)) {
     Write-Host 'Pushing updates ...' -ForegroundColor DarkCyan
     execute "git push origin $OriginBranch"
 } else {

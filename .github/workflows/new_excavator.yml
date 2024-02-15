@@ -33,7 +33,6 @@ jobs:
           cd .\my_bucket
           .\bin\auto-pr.ps1 `
             -Push `
-            -Bot `
             -Upstream "${{ github.repository }}:${{ github.ref_name }}" `
             -OriginBranch "${{ github.ref_name }}" `
             -TOKEN ${{ steps.generate_token.outputs.token }}
