@@ -24,6 +24,8 @@
     Push updates directly to 'origin branch'.
 .PARAMETER TOKEN
     Used for the GitHub API authentication.
+.PARAMETER SignedOffBy
+    Manually set up DCO signatures (signed-off-by) in commits via the GitHub GraphQL API.
 .PARAMETER Request
     Create pull-requests on 'upstream branch' for each update.
 .PARAMETER Help
@@ -69,6 +71,7 @@ param(
     [String] $Dir = "$PSScriptRoot/../bucket", # checks the parent dir
     [Switch] $Push,
     [String] $TOKEN,
+    [String] $SignedOffBy = 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>',
     [Switch] $Request,
     [Switch] $Help,
     [string[]] $SpecialSnowflakes,
@@ -193,7 +196,7 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
         Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
         $response = graphql_commit_push -t $TOKEN -RepoNwo $OriginRepoNwo -b $branch -f $manifest `
          -MessageTitle $CommitMessage `
-         -MessageBody 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>' `
+         -MessageBody $SignedOffBy `
          -ParentSHA $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
 
         if (!$response.data.createCommitOnBranch.commit.url) {
@@ -352,7 +355,7 @@ git diff --name-only | ForEach-Object {
                 Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
                 $response = graphql_commit_push -t $TOKEN -RepoNwo $OriginRepoNwo -b $OriginBranch -f $manifest `
                  -MessageTitle $CommitMessage `
-                 -MessageBody 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>' `
+                 -MessageBody $SignedOffBy `
                  -ParentSHA $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
 
                 if ($response.data.createCommitOnBranch.commit.url) {
