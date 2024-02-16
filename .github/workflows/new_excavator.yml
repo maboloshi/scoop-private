@@ -35,5 +35,4 @@ jobs:
             -Push `
             -Upstream "${{ github.repository }}:${{ github.ref_name }}" `
             -OriginBranch "${{ github.ref_name }}" `
-            -TOKEN ${{ steps.generate_token.outputs.token }} `
-            -SignedOffBy "Signed-off-by: action-assistant[bot] <152410706+action-assistant[bot]@users.noreply.github.com>"
+            -TOKEN ${{ steps.generate_token.outputs.token }}
