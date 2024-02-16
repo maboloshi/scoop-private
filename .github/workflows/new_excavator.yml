@@ -28,11 +28,12 @@ jobs:
           path: scoop_core
       - name: Excavate
         shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
           $env:SCOOP_HOME="$(Convert-Path '.\scoop_core')"
           cd .\my_bucket
           .\bin\auto-pr.ps1 `
             -Push `
             -Upstream "${{ github.repository }}:${{ github.ref_name }}" `
-            -OriginBranch "${{ github.ref_name }}" `
-            -TOKEN ${{ steps.generate_token.outputs.token }}
+            -OriginBranch "${{ github.ref_name }}"

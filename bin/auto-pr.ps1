@@ -22,8 +22,6 @@
     The directory where to search for manifests.
 .PARAMETER Push
     Push updates directly to 'origin branch'.
-.PARAMETER TOKEN
-    Used for the GitHub API authentication.
 .PARAMETER Request
     Create pull-requests on 'upstream branch' for each update.
 .PARAMETER Help
@@ -68,7 +66,6 @@ param(
     })]
     [String] $Dir = "$PSScriptRoot/../bucket", # checks the parent dir
     [Switch] $Push,
-    [String] $TOKEN,
     [Switch] $Request,
     [Switch] $Help,
     [string[]] $SpecialSnowflakes,
@@ -220,7 +217,7 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
         return
     }
 
-    if ($env:CI -and $TOKEN) {
+    if ($env:CI -and $env:GITHUB_TOKEN) {
         Write-Host "Create remote branch 'manifest/$app-$version'" -ForegroundColor Green
         $ParentSHA = $((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])
         $response = execute "Invoke-GithubRequest -Query 'repos/$UpstreamRepoNwo/git/refs' -Method Post -Body @{
@@ -379,7 +376,7 @@ git diff --name-only | ForEach-Object {
         $status = execute "git status --porcelain -uno"
         $status = $status | Where-Object { $_ -match "M\s{2}.*$app.json" }
         if ($status -and $status.StartsWith('M  ') -and $status.EndsWith("$app.json")) {
-            if ($env:CI -and $TOKEN) {
+            if ($env:CI -and $env:GITHUB_TOKEN) {
                 Write-Host "Creating and Pushing update $app ($version) via the GitHub GraphQL API ..." -ForegroundColor DarkCyan
                 $response = execute "graphql_commit_push @{
                     RepoNwo   = '$OriginRepoNwo'
@@ -405,7 +402,7 @@ git diff --name-only | ForEach-Object {
     }
 }
 
-if ($Push -and !($env:CI -and $TOKEN)) {
+if ($Push -and !($env:CI -and $env:GITHUB_TOKEN)) {
     Write-Host 'Pushing updates ...' -ForegroundColor DarkCyan
     execute "git push origin $OriginBranch"
 } else {
