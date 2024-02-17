@@ -22,6 +22,8 @@
     The directory where to search for manifests.
 .PARAMETER Push
     Push updates directly to 'origin branch'.
+.PARAMETER SignedOffBy
+    Manually set up DCO signatures (signed-off-by) in commits via the GitHub GraphQL API.
 .PARAMETER Request
     Create pull-requests on 'upstream branch' for each update.
 .PARAMETER Help
@@ -66,6 +68,7 @@ param(
     })]
     [String] $Dir = "$PSScriptRoot/../bucket", # checks the parent dir
     [Switch] $Push,
+    [String] $SignedOffBy = 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>',
     [Switch] $Request,
     [Switch] $Help,
     [string[]] $SpecialSnowflakes,
@@ -234,6 +237,7 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
             Branch    = '$branch'
             FilePath  = '$manifest'
             Title     = '$CommitMessage'
+            Body      = '$SignedOffBy'
             ParentSHA = '$ParentSHA'
         }"
         if (!$response.data.createCommitOnBranch.commit.url) {
@@ -280,20 +284,7 @@ a new version of [$app]($homepage) is available.
     }
 }
 
-function set_dco_signature {
-    $username = "$(Invoke-GithubRequest 'user').login"
-    $email = "$(Invoke-GithubRequest 'user/public_emails' | Select-Object -ExpandProperty email | Where-Object {$_ -like '*@users.noreply.github.com'})"
-
-    return "Signed-off-by: $username <$email>"
-}
-
 function graphql_commit_push($params) {
-
-    if ($params.PSObject.Properties.Name -notcontains 'Body') {
-        $params.Body = set_dco_signature
-    } else {
-        $params.Body += "`n$(set_dco_signature)"
-    }
 
     # Note that the line breaks in the cummitted file are LF style
     $EncodedFileContent = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes([System.IO.File]::ReadAllText($params.FilePath).Replace("`r`n", "`n")))
@@ -383,6 +374,7 @@ git diff --name-only | ForEach-Object {
                     Branch    = '$OriginBranch'
                     FilePath  = '$manifest'
                     Title     = '$commitMessage'
+                    Body      = '$SignedOffBy'
                     ParentSHA = '$((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])'
                 }"
                 if ($response.data.createCommitOnBranch.commit.url) {

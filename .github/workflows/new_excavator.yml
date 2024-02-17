@@ -36,4 +36,5 @@ jobs:
           .\bin\auto-pr.ps1 `
             -Push `
             -Upstream "${{ github.repository }}:${{ github.ref_name }}" `
-            -OriginBranch "${{ github.ref_name }}"
+            -OriginBranch "${{ github.ref_name }}" `
+            -SignedOffBy "Signed-off-by: action-assistant[bot] <152410706+action-assistant[bot]@users.noreply.github.com>"
