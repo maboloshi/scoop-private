@@ -32,10 +32,10 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
           curl -L `
-            -H "Authorization: Bearer $env:GITHUB_TOKEN" `
+            -H "Authorization: Bearer ${{ steps.generate_token.outputs.token }}" `
             https://api.github.com/user
           curl -L `
-            -H "Authorization: Bearer $env:GITHUB_TOKEN" `
+            -H "Authorization: Bearer ${{ steps.generate_token.outputs.token }}" `
             https://api.github.com/user/public_emails
           # $env:SCOOP_HOME="$(Convert-Path '.\scoop_core')"
           # cd .\my_bucket
