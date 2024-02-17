@@ -291,11 +291,11 @@ a new version of [$app]($homepage) is available.
 function set_dco_signature {
     $id = ''
     $CommitBot = $CommitBot -replace '\[bot\]', ''
-    $response = Invoke-GithubRequest 'user'
+    # $response = Invoke-GithubRequest 'user'
 
-    if (-not $response) {
+    # if (-not $response) {
         $response = Invoke-GithubRequest "users/$CommitBot\[bot\]"
-    }
+    # }
 
     if ($response) {
         $CommitBot = $response.login
@@ -308,10 +308,11 @@ function set_dco_signature {
 
 function graphql_commit_push($params) {
 
+    $Signedoffby=set_dco_signature
     if ($params.PSObject.Properties.Name -notcontains 'Body') {
-        $params.Body = set_dco_signature
+        $params.Body = $Signedoffby
     } else {
-        $params.Body += "`n$(set_dco_signature)"
+        $params.Body += "`n$Signedoffby"
     }
 
     # Note that the line breaks in the cummitted file are LF style
