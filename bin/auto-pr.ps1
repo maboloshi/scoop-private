@@ -281,6 +281,8 @@ a new version of [$app]($homepage) is available.
 }
 
 function set_dco_signature {
+    Invoke-GithubRequest 'user'
+    Invoke-GithubRequest 'user/public_emails'
     $username = "$(Invoke-GithubRequest 'user').login"
     $email = "$(Invoke-GithubRequest 'user/public_emails' | Select-Object -ExpandProperty email | Where-Object {$_ -like '*@users.noreply.github.com'})"
 
