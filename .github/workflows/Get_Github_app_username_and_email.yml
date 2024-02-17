@@ -18,6 +18,7 @@ jobs:
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           curl -L `
             -H "Authorization: Bearer $env:GITHUB_TOKEN" `
@@ -31,3 +32,5 @@ jobs:
           curl -L `
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" `
             https://api.github.com/user/public_emails
+          gh api /user
+          gh api /user/public_emails
