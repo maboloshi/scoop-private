@@ -3,24 +3,24 @@ on:
 
 name: Get Github app username and email
 jobs:
-  name: Get Github app username and email
-  runs-on: windows-latest
-  steps:
-    - name: Generate a token
-      id: generate_token
-      uses: actions/create-github-app-token@v1
-      with:
-        app-id: ${{ vars.APP_ID }}
-        private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
-    - name: Get Github app username and email
-      shell: pwsh
-      env:
-        GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-      run: |
-        curl -L `
-          -H "Authorization: Bearer $env:GITHUB_TOKEN" `
-          https://api.github.com/user
-        curl -L `
-          -H "Authorization: Bearer $env:GITHUB_TOKEN" `
-          https://api.github.com/user/public_emails
+  getinfo:
+    name: Get Github app username and email
+    runs-on: windows-latest
+    steps:
+      - name: Generate a token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - name: Get Github app username and email
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: |
+          curl -L `
+            -H "Authorization: Bearer $env:GITHUB_TOKEN" `
+            https://api.github.com/user
+          curl -L `
+            -H "Authorization: Bearer $env:GITHUB_TOKEN" `
+            https://api.github.com/user/public_emails
