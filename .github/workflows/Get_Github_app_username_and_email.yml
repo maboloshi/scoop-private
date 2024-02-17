@@ -4,8 +4,7 @@ on:
 name: Get Github app username and email
 
 permissions:
-  emails: read
-  profile: read
+  actions: read
 
 jobs:
   getinfo:
