@@ -26,6 +26,12 @@ jobs:
         run: |
           curl -L `
             -H "Authorization: Bearer $env:GITHUB_TOKEN" `
+            https://api.github.com/apps/APP_SLUG
+          curl -L `
+            -H "Authorization: Bearer $env:GITHUB_TOKEN" `
+            https://api.github.com/users
+          curl -L `
+            -H "Authorization: Bearer $env:GITHUB_TOKEN" `
             https://api.github.com/user
           curl -L `
             -H "Authorization: Bearer $env:GITHUB_TOKEN" `
@@ -36,5 +42,5 @@ jobs:
           curl -L `
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" `
             https://api.github.com/user/public_emails
-          gh api /user
-          gh api /user/public_emails
+          # gh api /user
+          # gh api /user/public_emails
