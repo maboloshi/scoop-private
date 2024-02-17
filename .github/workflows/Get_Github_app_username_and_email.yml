@@ -2,6 +2,11 @@ on:
   workflow_dispatch:
 
 name: Get Github app username and email
+
+permissions:
+  emails: read
+  profile: read
+
 jobs:
   getinfo:
     name: Get Github app username and email
