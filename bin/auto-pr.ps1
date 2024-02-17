@@ -287,7 +287,7 @@ a new version of [$app]($homepage) is available.
 function graphql_commit_push($params) {
 
     # Note that the line breaks in the cummitted file are LF style
-    $EncodedFileContent = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes([System.IO.File]::ReadAllText(Join-Path $Dir $params.FilePath).Replace("`r`n", "`n")))
+    $EncodedFileContent = (Get-Content -Path $params.FilePath -Raw -Encoding UTF8) -replace "`r`n", "`n" | ForEach-Object { [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($_)) }
 
     $Body = @{
         query = "mutation (`$input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: `$input) { commit { url } } }"
