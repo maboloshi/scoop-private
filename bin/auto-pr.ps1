@@ -290,12 +290,12 @@ a new version of [$app]($homepage) is available.
 
 function set_dco_signature {
     $id = ''
-    $CommitBot = $CommitBot -replace '\[bot\]', ''
-    # $response = Invoke-GithubRequest 'user'
+    # $CommitBot = $CommitBot -replace '\[bot\]$', ''
+    $response = Invoke-GithubRequest 'user'
 
-    # if (-not $response) {
-        $response = Invoke-GithubRequest "users/$CommitBot\[bot\]"
-    # }
+    if (-not $response) {
+        $response = Invoke-GithubRequest "users/$CommitBot"
+    }
 
     if ($response) {
         $CommitBot = $response.login
