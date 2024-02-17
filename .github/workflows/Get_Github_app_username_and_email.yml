@@ -5,6 +5,7 @@ name: Get Github app username and email
 jobs:
   getinfo:
     name: Get Github app username and email
+    environment: Excavator
     runs-on: windows-latest
     steps:
       - name: Generate a token
