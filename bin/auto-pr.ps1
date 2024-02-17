@@ -22,6 +22,9 @@
     The directory where to search for manifests.
 .PARAMETER Push
     Push updates directly to 'origin branch'.
+.PARAMETER CommitBot
+    Set the Commit Bot account, the default is 'github-actions[bot]'.
+    The '[bot]' suffix is not mandatory.
 .PARAMETER Request
     Create pull-requests on 'upstream branch' for each update.
 .PARAMETER Help
@@ -66,6 +69,7 @@ param(
     })]
     [String] $Dir = "$PSScriptRoot/../bucket", # checks the parent dir
     [Switch] $Push,
+    [String] $CommitBot = "github-actions[bot]",
     [Switch] $Request,
     [Switch] $Help,
     [string[]] $SpecialSnowflakes,
@@ -197,7 +201,11 @@ function Invoke-GithubRequest {
 
     $env:GH_REQUEST_COUNTER = ([int] $env:GH_REQUEST_COUNTER) + 1
 
-    return Invoke-RestMethod @parameters
+    try {
+        return Invoke-RestMethod @parameters
+    } catch {
+        throw $_.Exception
+    }
 }
 
 function pull_requests($json, [String] $app, [String] $upstream, [String] $manifest, [String] $commitMessage) {
@@ -281,12 +289,21 @@ a new version of [$app]($homepage) is available.
 }
 
 function set_dco_signature {
-    Invoke-GithubRequest 'user'
-    Invoke-GithubRequest 'user/public_emails'
-    $username = "$(Invoke-GithubRequest 'user').login"
-    $email = "$(Invoke-GithubRequest 'user/public_emails' | Select-Object -ExpandProperty email | Where-Object {$_ -like '*@users.noreply.github.com'})"
+    $id = ''
+    $CommitBot = $CommitBot -replace '\[bot\]', ''
+    $response = Invoke-GithubRequest 'user'
 
-    return "Signed-off-by: $username <$email>"
+    if (-not $response) {
+        $response = Invoke-GithubRequest "users/$CommitBot\[bot\]"
+    }
+
+    if ($response) {
+        $CommitBot = $response.login
+        $id = $response.id
+        return "Signed-off-by: $CommitBot <$id+$CommitBot@users.noreply.github.com>"
+    } else {
+        return ''
+    }
 }
 
 function graphql_commit_push($params) {
@@ -298,7 +315,7 @@ function graphql_commit_push($params) {
     }
 
     # Note that the line breaks in the cummitted file are LF style
-    $EncodedFileContent = [System.Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes([System.IO.File]::ReadAllText($params.FilePath).Replace("`r`n", "`n")))
+    $EncodedFileContent = (Get-Content -Path $params.FilePath -Raw -Encoding UTF8) -replace "`r`n", "`n" | ForEach-Object { [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($_)) }
 
     $Body = @{
         query = "mutation (`$input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: `$input) { commit { url } } }"

@@ -32,15 +32,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
-          curl -L `
-            -H "Authorization: Bearer $env:GITHUB_TOKEN" `
-            https://api.github.com/user
-          curl -L `
-            -H "Authorization: Bearer $env:GITHUB_TOKEN" `
-            https://api.github.com/user/public_emails
-          # $env:SCOOP_HOME="$(Convert-Path '.\scoop_core')"
-          # cd .\my_bucket
-          # .\bin\auto-pr.ps1 `
-          #   -Push `
-          #   -Upstream "${{ github.repository }}:${{ github.ref_name }}" `
-          #   -OriginBranch "${{ github.ref_name }}"
+          $env:SCOOP_HOME="$(Convert-Path '.\scoop_core')"
+          cd .\my_bucket
+          .\bin\auto-pr.ps1 `
+            -Push `
+            -Upstream "${{ github.repository }}:${{ github.ref_name }}" `
+            -OriginBranch "${{ github.ref_name }}" `
+            -CommitBot "action-assistant[bot]"
+
