@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Generate a token
         id: generate_token
-        uses: actions/create-github-app-token@v1
+        uses: maboloshi/create-github-app-token@main
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
@@ -23,24 +23,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          app_slug: ${{ steps.generate_token.outputs.app-slug }}
         run: |
           curl -L `
             -H "Authorization: Bearer $env:GITHUB_TOKEN" `
-            https://api.github.com/apps/APP_SLUG
-          curl -L `
-            -H "Authorization: Bearer $env:GITHUB_TOKEN" `
-            https://api.github.com/users
-          curl -L `
-            -H "Authorization: Bearer $env:GITHUB_TOKEN" `
-            https://api.github.com/user
-          curl -L `
-            -H "Authorization: Bearer $env:GITHUB_TOKEN" `
-            https://api.github.com/user/public_emails
-          curl -L `
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" `
-            https://api.github.com/user
-          curl -L `
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" `
-            https://api.github.com/user/public_emails
-          # gh api /user
-          # gh api /user/public_emails
+            https://api.github.com/users/$env:app_slug[bot]
