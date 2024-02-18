@@ -10,7 +10,7 @@ jobs:
   getinfo:
     name: Get Github app username and email
     environment: Excavator
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Generate a token
         id: generate_token
