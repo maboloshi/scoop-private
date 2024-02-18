@@ -18,13 +18,7 @@ jobs:
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-      - name: Get Github app username and email
-        shell: pwsh
-        env:
-          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          app_slug: ${{ steps.generate_token.outputs.app-slug }}
+      - name: Get generate_token outputs
         run: |
-          curl -L `
-            -H "Authorization: Bearer $env:GITHUB_TOKEN" `
-            https://api.github.com/users/$env:app_slug[bot]
+          echo '${{ steps.generate_token.outputs.data }}'
+          echo '${{ steps.generate_token.outputs.app-slug }}''
