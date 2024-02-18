@@ -22,9 +22,6 @@
     The directory where to search for manifests.
 .PARAMETER Push
     Push updates directly to 'origin branch'.
-.PARAMETER CommitBot
-    Set the Commit Bot account, the default is 'github-actions[bot]'.
-    The '[bot]' suffix is not mandatory.
 .PARAMETER Request
     Create pull-requests on 'upstream branch' for each update.
 .PARAMETER Help
@@ -69,7 +66,6 @@ param(
     })]
     [String] $Dir = "$PSScriptRoot/../bucket", # checks the parent dir
     [Switch] $Push,
-    [String] $CommitBot = "github-actions[bot]",
     [Switch] $Request,
     [Switch] $Help,
     [string[]] $SpecialSnowflakes,
@@ -289,21 +285,27 @@ a new version of [$app]($homepage) is available.
 }
 
 function set_dco_signature {
+    $CommitBot = ''
     $id = ''
-    # $CommitBot = $CommitBot -replace '\[bot\]$', ''
-    # $response = Invoke-GithubRequest 'user'
 
-    # if (-not $response) {
-        $response = Invoke-GithubRequest "users/$CommitBot"
-    # }
+    if ($env:GITHUB_TOKEN -like "ghp_*") {
+        # https://github.blog/2021-04-05-behind-githubs-new-authentication-token-formats/
+        # 'ghp_'开头的是 GitHub 个人访问令牌
 
-    if ($response) {
-        $CommitBot = $response.login
-        $id = $response.id
-        return "Signed-off-by: $CommitBot <$id+$CommitBot@users.noreply.github.com>"
+        $response = Invoke-GithubRequest 'user'
+    } elseif ($env:app_slug) {
+        $CommitBot = $env:app_slug
     } else {
-        return ''
+        $CommitBot = "github-actions"
     }
+
+    if ($CommitBot) {
+        $response = Invoke-GithubRequest "users/$CommitBot[bot]"
+    }
+
+    $CommitBot = $response.login
+    $id = $response.id
+    return "Signed-off-by: $CommitBot <$id+$CommitBot@users.noreply.github.com>"
 }
 
 function graphql_commit_push($params) {

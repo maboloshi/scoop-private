@@ -13,11 +13,10 @@ jobs:
     steps:
       - name: Generate a token
         id: generate_token
-        uses: actions/create-github-app-token@v1
+        uses: maboloshi/create-github-app-token@main
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
       - name: Checkout Bucket
         uses: actions/checkout@v4
         with:
@@ -31,12 +30,12 @@ jobs:
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          app_slug: ${{ steps.generate_token.outputs.app-slug }}
         run: |
           $env:SCOOP_HOME="$(Convert-Path '.\scoop_core')"
           cd .\my_bucket
           .\bin\auto-pr.ps1 `
             -Push `
             -Upstream "${{ github.repository }}:${{ github.ref_name }}" `
-            -OriginBranch "${{ github.ref_name }}" `
-            -CommitBot "action-assistant[bot]"
+            -OriginBranch "${{ github.ref_name }}"
 
