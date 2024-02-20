@@ -20,4 +20,4 @@ jobs:
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Get generate_token outputs
         run: |
-          echo '${{ steps.generate_token.outputs.app-slug }}''
+          echo '${{ steps.generate_token.outputs.app-slug }}'
