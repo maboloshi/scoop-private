@@ -21,3 +21,4 @@ jobs:
       - name: Get generate_token outputs
         run: |
           echo '${{ steps.generate_token.outputs.app-slug }}'
+          echo '${{ steps.generate_token.outputs.installation-id }}'
