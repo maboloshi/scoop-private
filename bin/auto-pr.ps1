@@ -22,8 +22,6 @@
     The directory where to search for manifests.
 .PARAMETER Push
     Push updates directly to 'origin branch'.
-.PARAMETER SignedOffBy
-    Manually set up DCO signatures (signed-off-by) in commits via the GitHub GraphQL API.
 .PARAMETER Request
     Create pull-requests on 'upstream branch' for each update.
 .PARAMETER Help
@@ -68,7 +66,6 @@ param(
     })]
     [String] $Dir = "$PSScriptRoot/../bucket", # checks the parent dir
     [Switch] $Push,
-    [String] $SignedOffBy = 'Signed-off-by: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>',
     [Switch] $Request,
     [Switch] $Help,
     [string[]] $SpecialSnowflakes,
@@ -183,7 +180,7 @@ function Invoke-GithubRequest {
         $Url = "$GITHUB_API_URL/$Query"
     }
 
-    $parameters = @{
+    $invokeRestMethodParms = @{
         'Headers' = @{
             # Authorization token is neeeded for posting comments and to increase limit of requests
             'Authorization' = "Bearer $env:GITHUB_TOKEN"
@@ -192,15 +189,19 @@ function Invoke-GithubRequest {
         'Uri'     = "$Url"
     }
 
-    Write-Host 'Github Request' $parameters -ForegroundColor DarkCyan
+    Write-Host 'Github Request' $invokeRestMethodParms -ForegroundColor DarkCyan
 
-    if ($Body) { $parameters.Add('Body', (ConvertTo-Json $Body -Depth 8 -Compress)) }
+    if ($Body) { $invokeRestMethodParms.Body = ConvertTo-Json $Body -Depth 8 -Compress }
 
-    Write-Host 'Request Body' $parameters.Body -ForegroundColor DarkCyan
+    Write-Host 'Request Body' $invokeRestMethodParms.Body -ForegroundColor DarkCyan
 
     $env:GH_REQUEST_COUNTER = ([int] $env:GH_REQUEST_COUNTER) + 1
 
-    return Invoke-RestMethod @parameters
+    try {
+        return Invoke-RestMethod @invokeRestMethodParms
+    } catch {
+        throw $_.Exception
+    }
 }
 
 function pull_requests($json, [String] $app, [String] $upstream, [String] $manifest, [String] $commitMessage) {
@@ -237,7 +238,6 @@ function pull_requests($json, [String] $app, [String] $upstream, [String] $manif
             Branch    = '$branch'
             FilePath  = '$manifest'
             Title     = '$CommitMessage'
-            Body      = '$SignedOffBy'
             ParentSHA = '$ParentSHA'
         }"
         if (!$response.data.createCommitOnBranch.commit.url) {
@@ -284,7 +284,38 @@ a new version of [$app]($homepage) is available.
     }
 }
 
+function set_dco_signature {
+    $CommitBot = ''
+    $id = ''
+
+    if ($env:GITHUB_TOKEN -like "ghp_*") {
+        # https://github.blog/2021-04-05-behind-githubs-new-authentication-token-formats/
+        # 'ghp_'开头的是 GitHub 个人访问令牌
+
+        $response = Invoke-GithubRequest 'user'
+    } elseif ($env:APP_SLUG) {
+        $CommitBot = $env:APP_SLUG
+    } else {
+        $CommitBot = "github-actions"
+    }
+
+    if ($CommitBot) {
+        $response = Invoke-GithubRequest "users/$CommitBot[bot]"
+    }
+
+    $CommitBot = $response.login
+    $id = $response.id
+    return "Signed-off-by: $CommitBot <$id+$CommitBot@users.noreply.github.com>"
+}
+
 function graphql_commit_push($params) {
+
+    $Signedoffby=set_dco_signature
+    if ($params.PSObject.Properties.Name -notcontains 'Body') {
+        $params.Body = $Signedoffby
+    } else {
+        $params.Body += "`n$Signedoffby"
+    }
 
     # Note that the line breaks in the cummitted file are LF style
     $EncodedFileContent = (Get-Content -Path $params.FilePath -Raw -Encoding UTF8) -replace "`r`n", "`n" | ForEach-Object { [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($_)) }
@@ -374,7 +405,6 @@ git diff --name-only | ForEach-Object {
                     Branch    = '$OriginBranch'
                     FilePath  = '$manifest'
                     Title     = '$commitMessage'
-                    Body      = '$SignedOffBy'
                     ParentSHA = '$((git ls-remote --refs --quiet origin $OriginBranch).Split()[0])'
                 }"
                 if ($response.data.createCommitOnBranch.commit.url) {

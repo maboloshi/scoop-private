@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Generate a token
         id: generate_token
-        uses: actions/create-github-app-token@v1
+        uses: maboloshi/create-github-app-token@main
         with:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
@@ -30,11 +30,12 @@ jobs:
         shell: pwsh
         env:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+          APP_SLUG: ${{ steps.generate_token.outputs.app-slug }}
         run: |
           $env:SCOOP_HOME="$(Convert-Path '.\scoop_core')"
           cd .\my_bucket
           .\bin\auto-pr.ps1 `
             -Push `
             -Upstream "${{ github.repository }}:${{ github.ref_name }}" `
-            -OriginBranch "${{ github.ref_name }}" `
-            -SignedOffBy "Signed-off-by: action-assistant[bot] <152410706+action-assistant[bot]@users.noreply.github.com>"
+            -OriginBranch "${{ github.ref_name }}"
+
