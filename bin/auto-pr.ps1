@@ -78,6 +78,8 @@ if (-not $OriginRepoNwo) {
 }
 $OriginOwner = $OriginRepoNwo.Split('/')[0]
 
+$Signedoffby = ""
+
 if (!$env:SCOOP_HOME) { $env:SCOOP_HOME = Convert-Path (scoop prefix scoop) }
 . (Join-Path $env:SCOOP_HOME "lib\core.ps1")
 . (Join-Path $env:SCOOP_HOME "lib\manifest.ps1")
@@ -310,7 +312,10 @@ function set_dco_signature {
 
 function graphql_commit_push($params) {
 
-    $Signedoffby=set_dco_signature
+    if (-not $Signedoffby) {
+        $Signedoffby = set_dco_signature
+    }
+
     if ($params.PSObject.Properties.Name -notcontains 'Body') {
         $params.Body = $Signedoffby
     } else {
