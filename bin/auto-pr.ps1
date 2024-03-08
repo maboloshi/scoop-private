@@ -316,11 +316,7 @@ function graphql_commit_push($params) {
         $Signedoffby = set_dco_signature
     }
 
-    if ($params.PSObject.Properties.Name -notcontains 'Body') {
-        $params.Body = $Signedoffby
-    } else {
-        $params.Body += "`n$Signedoffby"
-    }
+    $params.Body += "`n$Signedoffby"
 
     # Note that the line breaks in the cummitted file are LF style
     $EncodedFileContent = (Get-Content -Path $params.FilePath -Raw -Encoding UTF8) -replace "`r`n", "`n" | ForEach-Object { [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($_)) }
