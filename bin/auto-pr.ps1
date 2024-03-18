@@ -190,7 +190,7 @@ function Invoke-GithubRequest {
         'Uri'     = "$Url"
     }
 
-    Write-Host 'Github Request' $invokeRestMethodParms -ForegroundColor DarkCyan
+    Write-Host 'GitHub Request' $invokeRestMethodParms -ForegroundColor DarkCyan
 
     if ($Body) { $invokeRestMethodParms.Body = ConvertTo-Json $Body -Depth 8 -Compress }
 
