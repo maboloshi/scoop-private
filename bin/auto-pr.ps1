@@ -110,7 +110,6 @@ Mandatory options:
 Optional options:
   -u,  -upstream                   upstream repository with target branch
   -o,  -originbranch               origin (local) branch name
-  -b,  -bot                        use the GitHub GraphQL API for commit and push
   -h,  -help
 '@
     exit 0
