@@ -28,15 +28,18 @@
         ]
     ],
     "post_install": [
-        "## 用户数据貌似无法复用, 安装后会重置, 故暂时不迁移用户数据",
-        "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
-        "Mount-ExternalRuntimeData -Source \"$persist_dir\\User Data\" -Target \"$env:LocalAppData\\Microsoft\\Edge Beta\\User Data\"",
-        "Remove-Module -Name Utils-private"
+        "$runtimeCache = \"$env:LocalAppData\\Microsoft\\Edge Beta\\User Data\"",
+        "$runtimeCachePersist = \"$persist_dir\\User Data\"",
+        "if (Test-Path $runtimeCachePersist) {",
+        "    Remove-Item -Path $runtimeCache -Force -Recurse -ErrorAction SilentlyContinue",
+        "} elseif (Test-Path $runtimeCache) {",
+        "    Move-Item -Path $runtimeCache -Destination $runtimeCachePersist -Force",
+        "}",
+        "New-Item -Type Junction -Path $runtimeCache -Target $runtimeCachePersist -Force | Out-Null"
     ],
     "post_uninstall": [
-        "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
-        "Dismount-ExternalRuntimeData -Target \"$env:LocalAppData\\Microsoft\\Edge Beta\\User Data\"",
-        "Remove-Module -Name Utils-private"
+        "$runtimeCache = \"$env:LocalAppData\\Microsoft\\Edge Beta\\User Data\"",
+        "Remove-Item -Path $runtimeCache -Force -Recurse -ErrorAction SilentlyContinue"
     ],
     "persist": "User Data",
     "checkver": {

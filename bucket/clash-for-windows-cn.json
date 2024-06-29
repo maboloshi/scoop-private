@@ -31,18 +31,22 @@
         ]
     ],
     "post_install": [
-        "if (!(Test-Path \"$dir\\data\\*\") -and (Test-Path \"$env:USERPROFILE\\.config\\clash\")) {",
+        "if (!(Test-Path \"$persist_dir\\data\") -and (Test-Path \"$env:USERPROFILE\\.config\\clash\")) {",
         "    info '[Portable Mode]: Copying user config data . . .'",
         "    Copy-Item \"$env:USERPROFILE\\.config\\clash\\*\" \"$persist_dir\\data\" -Recurse",
         "}",
-        "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
-        "Mount-ExternalRuntimeData -Source \"$persist_dir\\clash_win\" -Target \"$env:APPDATA\\clash_win\"",
-        "Remove-Module -Name Utils-private"
+        "$runtimeCache = \"$env:APPDATA\\clash_win\"",
+        "$runtimeCachePersist = \"$persist_dir\\clash_win\"",
+        "if (Test-Path $runtimeCachePersist) {",
+        "    Remove-Item -Path $runtimeCache -Force -Recurse -ErrorAction SilentlyContinue",
+        "} elseif (Test-Path $runtimeCache) {",
+        "    Move-Item -Path $runtimeCache -Destination $runtimeCachePersist -Force",
+        "}",
+        "New-Item -Type Junction -Path $runtimeCache -Target $runtimeCachePersist -Force | Out-Null"
     ],
     "post_uninstall": [
-        "Import-Module $(Join-Path $(Find-BucketDirectory -Root -Name scoop-private) scripts/Utils-private.psm1)",
-        "Dismount-ExternalRuntimeData -Target \"$env:APPDATA\\clash_win\"",
-        "Remove-Module -Name Utils-private"
+        "$runtimeCache = \"$env:APPDATA\\clash_win\"",
+        "Remove-Item -Path $runtimeCache -Force -Recurse -ErrorAction SilentlyContinue"
     ],
     "persist": "data"
 }
