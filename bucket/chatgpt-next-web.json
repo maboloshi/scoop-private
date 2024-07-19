@@ -1,5 +1,5 @@
 {
-    "version": "2.13.0",
+    "version": "2.13.1",
     "description": "A well-designed cross-platform ChatGPT UI",
     "homepage": "https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web",
     "license": {
@@ -8,8 +8,8 @@
     },
     "architecture": {
         "64bit": {
-            "url": "https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/releases/download/v2.13.0/NextChat_2.13.0_x64-setup.exe#/dl.7z",
-            "hash": "e0012511a4c534169b127878a9f81505fb09208f8387cd852937b6c7113119a6"
+            "url": "https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/releases/download/v2.13.1/NextChat_2.13.1_x64-setup.exe#/dl.7z",
+            "hash": "436af78e61c5a86534ec1e0c696a23faffe85fdb090b3176750dddf89439c7c5"
         }
     },
     "pre_install": "Remove-Item \"$dir\\`$PLUGINSDIR\", \"$dir\\Unins*\" -Force -Recurse",
