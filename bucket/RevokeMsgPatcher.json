@@ -1,13 +1,13 @@
 {
-    "version": "1.8",
+    "version": "1.9",
     "description": ":trollface: A hex editor for WeChat/QQ/TIM - PC版微信/QQ/TIM防撤回补丁",
     "homepage": "https://github.com/huiyadanli/RevokeMsgPatcher",
     "license": "License",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/huiyadanli/RevokeMsgPatcher/releases/download/1.8/RevokeMsgPatcher.v1.8.1.zip",
-            "hash": "af327a6c8d8f088f4b043d02ea395a61a00c444d600541bbe7a4723622728b8b",
-            "extract_dir": "RevokeMsgPatcher.v1.8.1"
+            "url": "https://github.com/huiyadanli/RevokeMsgPatcher/releases/download/1.9/RevokeMsgPatcher.v1.9.zip",
+            "hash": "003642c3736ace8620a99a59af4b237d3e5b8f3ae9f56a278259344c9caa394c",
+            "extract_dir": "RevokeMsgPatcher.v1.9"
         }
     },
     "bin": [
