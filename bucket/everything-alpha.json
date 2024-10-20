@@ -32,11 +32,17 @@
         "Copy-Item -Path \"$persist_dir\\*\" -Destination \"$dir\" -Recurse -ErrorAction SilentlyContinue"
     ],
     "post_install": [
-        "$app_path = \"$dir\\Everything.exe\".Replace('\\', '\\\\')",
-        "$reg_content = Get-Content \"$bucketsdir\\$bucket\\scripts\\everything-alpha\\install-context.reg\" -Encoding 936",
-        "$reg_content = $reg_content.replace('$app_path', $app_path)",
-        "Set-Content \"$dir\\install-context.reg\" $reg_content -Encoding 936",
-        "Copy-Item \"$bucketsdir\\$bucket\\scripts\\everything-alpha\\uninstall-context.reg\" \"$dir\\\""
+        "$dir_escaped = \"$dir\".Replace('\\', '\\\\')",
+        "@('install-context.reg', 'uninstall-context.reg') | ForEach-Object {",
+        "    if (Test-Path \"$bucketsdir\\$bucket\\scripts\\$app\\$_\") {",
+        "        $content = Get-Content \"$bucketsdir\\$bucket\\scripts\\$app\\$_\" -Encoding 936",
+        "        $content = $content.Replace('$install_dir', $dir_escaped)",
+        "        if ($global) {",
+        "            $content = $content.Replace('HKEY_CURRENT_USER', 'HKEY_LOCAL_MACHINE')",
+        "        }",
+        "        Set-Content -Path \"$dir\\$_\" $content -Encoding 936",
+        "    }",
+        "}"
     ],
     "pre_uninstall": [
         "if ($cmd -eq 'uninstall') {",
