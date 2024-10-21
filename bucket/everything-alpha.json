@@ -3,7 +3,6 @@
     "description": "Locate files and folders by name instantly.",
     "homepage": "https://www.voidtools.com",
     "license": "MIT",
-    "notes": "Run '$dir\\install-context.reg' to add Everything to right-click context menu.",
     "architecture": {
         "64bit": {
             "url": [
@@ -42,7 +41,8 @@
         "        }",
         "        Set-Content -Path \"$dir\\$_\" $content -Encoding 936",
         "    }",
-        "}"
+        "}",
+        "reg import \"$dir\\install-context.reg\""
     ],
     "pre_uninstall": [
         "if ($cmd -eq 'uninstall') {",
