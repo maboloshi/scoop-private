@@ -7,11 +7,6 @@ New-ItemProperty -Path "$regRoot\Scooter Software\Beyond Compare 5" -Name "ExePa
 New-Item -Path "$regRoot\Scooter Software\Beyond Compare 5\BcShellEx" -Force | Out-Null
 New-ItemProperty -Path "$regRoot\Scooter Software\Beyond Compare 5\BcShellEx" -Name "SavedLeft" -Value $bcExePath -Force | Out-Null
 
-New-Item -Path "$regRoot\WOW6432Node\Scooter Software\Beyond Compare 5" -Force | Out-Null
-New-ItemProperty -Path "$regRoot\WOW6432Node\Scooter Software\Beyond Compare 5" -Name "ExePath" -Value $bcExePath -Force | Out-Null
-New-Item -Path "$regRoot\WOW6432Node\Scooter Software\Beyond Compare 5\BcShellEx" -Force | Out-Null
-New-ItemProperty -Path "$regRoot\WOW6432Node\Scooter Software\Beyond Compare 5\BcShellEx" -Name "SavedLeft" -Value $bcExePath -Force | Out-Null
-
 $clsidPath = "$regRoot\Classes\CLSID\{812BC6B5-83CF-4AD9-97C1-6C60C8D025C5}"
 New-Item -Path $clsidPath -Force | Out-Null
 New-ItemProperty -Path $clsidPath -Name "(default)" -Value "CirrusShellEx" -Force | Out-Null
