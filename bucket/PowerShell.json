@@ -7,10 +7,6 @@
         "64bit": {
             "url": "https://github.com/PowerShell/PowerShell/releases/download/v7.4.5/PowerShell-7.4.5-win-x64.zip",
             "hash": "c735653083d4bc725687c005a4e6d4f0fb11c94b0cf86850467688796ac00342"
-        },
-        "32bit": {
-            "url": "https://github.com/PowerShell/PowerShell/releases/download/v7.4.5/PowerShell-7.4.5-win-x86.zip",
-            "hash": "1729e62b201f79a98422a087defd8a9e42282cc1791934d1c1e6a9ef24fb704b"
         }
     },
     "env_add_path": ".",
@@ -26,9 +22,6 @@
         "architecture": {
             "64bit": {
                 "url": "https://github.com/PowerShell/PowerShell/releases/download/v$version/PowerShell-$version-win-x64.zip"
-            },
-            "32bit": {
-                "url": "https://github.com/PowerShell/PowerShell/releases/download/v$version/PowerShell-$version-win-x86.zip"
             }
         },
         "hash": {

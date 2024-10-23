@@ -13,16 +13,6 @@
                 "4be2468cfc245fc20266f887838b38eeab7f6edb069d244538370c7b2f3a8d97",
                 "5b4d61ab5211b5387a3254578459067b9368f57b27c1e6e163f8f05e2ab077cd"
             ]
-        },
-        "32bit": {
-            "url": [
-                "https://www.voidtools.com/Everything-1.5.0.1383a.x86.zip",
-                "https://www.voidtools.com/Everything.lng.zip"
-            ],
-            "hash": [
-                "1285924fcb0da992b75fdba0c4107cffc4bf9ec644d3e8cc14a8ac9cb675652f",
-                "5b4d61ab5211b5387a3254578459067b9368f57b27c1e6e163f8f05e2ab077cd"
-            ]
         }
     },
     "pre_install": [
@@ -75,9 +65,6 @@
         "architecture": {
             "64bit": {
                 "url": "https://www.voidtools.com/Everything-$version.x64.zip"
-            },
-            "32bit": {
-                "url": "https://www.voidtools.com/Everything-$version.x86.zip"
             }
         }
     }

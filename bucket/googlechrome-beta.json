@@ -10,10 +10,6 @@
         "64bit": {
             "url": "https://dl.google.com/release2/chrome/pvjpfshh6a373dkddbacwuu3km_131.0.6778.3/131.0.6778.3_chrome_installer.exe#/dl.7z",
             "hash": "2986139ad0689fe7f021b5eec3e23e0aa2a22ab294d8470c8c201639546e2334"
-        },
-        "32bit": {
-            "url": "https://dl.google.com/release2/chrome/acibzquohdw3em7n77cgrht5xnra_131.0.6778.3/131.0.6778.3_chrome_installer.exe#/dl.7z",
-            "hash": "2262d2c763594e35408bbb9a07c0a0db27689ee8bf1ac9f0a89bb9934a554231"
         }
     },
     "installer": {
@@ -58,13 +54,6 @@
                 "hash": {
                     "url": "https://scoopinstaller.github.io/UpdateTracker/googlechrome/chrome.min.xml",
                     "xpath": "/chromechecker/beta64[version='$version']/sha256"
-                }
-            },
-            "32bit": {
-                "url": "https://dl.google.com/release2/chrome/$match32_$version/$version_chrome_installer.exe#/dl.7z",
-                "hash": {
-                    "url": "https://scoopinstaller.github.io/UpdateTracker/googlechrome/chrome.min.xml",
-                    "xpath": "/chromechecker/beta32[version='$version']/sha256"
                 }
             }
         }
