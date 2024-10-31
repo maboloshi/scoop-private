@@ -32,6 +32,24 @@ scoop bucket add scoop-private https://github.com/maboloshi/scoop-private
 scoop install scoop-private/<软件名>
 ```
 
+## 扩展
+
+本仓库新增了一个`resetx`命令。当重装系统后，若直接使用`reset`命令，会出现不会执行`Manifest`文件中`post_install`节进行本地化设置的情况。而`resetx`命令恰好能解决此问题，给用户操作带来便利。
+
+> 关于`post_install`：它可能涉及一些本地化设置，例如对右键菜单中路径进行调整。
+
+创建别名：
+
+```powershell
+scoop alias add resetx "$env:SCOOP\buckets\scoop-private\Scripts\scoop-resetx.ps1"
+```
+
+使用方法参考`reset`命令：
+
+```powershell
+scoop resetx <app>
+```
+
 ## 参考
 - [Scoop Wiki - Buckets](https://github.com/ScoopInstaller/scoop/wiki/Buckets)
 - [Scoop Wiki - App Manifests](https://github.com/ScoopInstaller/Scoop/wiki/App-Manifests)
