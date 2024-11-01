@@ -44,6 +44,12 @@ scoop install scoop-private/<软件名>
 scoop alias add resetx "$env:SCOOP\buckets\scoop-private\Scripts\scoop-resetx.ps1"
 ```
 
+或安装到 Scoop：
+
+```powershell
+Copy-Item "$env:SCOOP\buckets\scoop-private\Scripts\scoop-resetx.ps1" "$env:SCOOP\apps\scoop\current\libexec\"
+```
+
 使用方法参考`reset`命令：
 
 ```powershell
