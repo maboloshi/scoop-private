@@ -1,0 +1,15 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Fonts]
+"Sarasa UI SC Regular (TrueType)"="$install_dir\\SarasaUiSC-Regular.ttf"
+"更纱黑体 UI SC Regular (TrueType)"="$install_dir\\SarasaUiSC-Regular.ttf"
+"Sarasa UI SC SemiBold (TrueType)"="$install_dir\\SarasaUiSC-SemiBold.ttf"
+"更纱黑体 UI SC SemiBold (TrueType)"="$install_dir\\SarasaUiSC-SemiBold.ttf"
+"Sarasa Mono SC Bold (TrueType)"="$install_dir\\SarasaMonoSC-Bold.ttf"
+"等距更纱黑体 SC Bold (TrueType)"="$install_dir\\SarasaMonoSC-Bold.ttf"
+"Sarasa Mono SC Bold Italic (TrueType)"="$install_dir\\SarasaMonoSC-BoldItalic.ttf"
+"等距更纱黑体 SC Bold Italic (TrueType)"="$install_dir\\SarasaMonoSC-BoldItalic.ttf"
+"Sarasa Mono SC Italic (TrueType)"="$install_dir\\SarasaMonoSC-Italic.ttf"
+"等距更纱黑体 SC Italic (TrueType)"="$install_dir\\SarasaMonoSC-Italic.ttf"
+"Sarasa Mono SC Regular (TrueType)"="$install_dir\\SarasaMonoSC-Regular.ttf"
+"等距更纱黑体 SC Regular (TrueType)"="$install_dir\\SarasaMonoSC-Regular.ttf"
