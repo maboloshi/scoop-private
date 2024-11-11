@@ -1,16 +1,14 @@
 {
-    "version": "7.6.13.83010801",
+    "version": "7.6.28.111110801",
     "description": "Overseas version DingtTalk. An all-in-one free communication and collaboration platform",
     "homepage": "https://www.dingtalk.com/en",
     "license": {
         "identifier": "EULA",
         "url": "https://page.dingtalk.com/wow/dingtalk/act/service-en-lite"
     },
-    "url": "https://dtapp-pub.dingtalk.com/dingtalk-desktop/win_installer/Release/DingTalk_v7.6.13.83010801.exe#/dl.7z",
-    "hash": "883c6891c979689fb9c26c62085077ed5697cd6175ee9a8b72ddb922fe5b31c8",
-    "pre_install": [
-        "Remove-Item \"$dir\\build\\updater\", \"$dir\\setup.xml\", \"$dir\\uninst*\" -Force -Recurse"
-    ],
+    "url": "https://dtapp-pub.dingtalk.com/dingtalk-desktop/win_installer/Release/DingTalk_v7.6.28.111110801.exe#/dl.7z",
+    "hash": "e7bf43ff9999f7f26037fdc3edf9c4596278f42ab2d23bbfa918890ecf19c973",
+    "pre_install": "Remove-Item \"$dir\\build\\updater\", \"$dir\\setup.xml\", \"$dir\\uninst*\" -Force -Recurse",
     "shortcuts": [
         [
             "build\\dist\\Dingtalk.exe",
