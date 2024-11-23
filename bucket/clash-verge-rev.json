@@ -1,21 +1,21 @@
 {
-    "version": "1.7.7",
+    "version": "2.0.0",
     "description": "Continuation of Clash Verge - A Clash Meta GUI based on Tauri.",
     "homepage": "https://github.com/clash-verge-rev/clash-verge-rev",
     "license": "GPL-3.0-only",
     "architecture": {
         "64bit": {
-            "url": "https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v1.7.7/Clash.Verge_1.7.7_x64_portable.zip",
-            "hash": "c3b8c63b908a2674811643cb89635ef89e32a1b9b39114ff087a01890a5d8ee0"
+            "url": "https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.0.0/Clash.Verge_2.0.0_x64-setup.exe#/dl.7z",
+            "hash": "6c5ea62e7052cb347aaa8ed0511cf76d901787281d61ee4cc6339377eb2bd5da"
         },
         "arm64": {
-            "url": "https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v1.7.7/Clash.Verge_1.7.7_arm64_portable.zip",
-            "hash": "f54e2b0d6e746f26b7c5d0c430106f7703b96f612d1da9736b286e1131db941a"
+            "url": "https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v2.0.0/Clash.Verge_2.0.0_arm64-setup.exe#/dl.7z",
+            "hash": "cb8acdace59eba44e85ae9e25fd1b97375b2520c680299f5c0ccccc880c343da"
         }
     },
     "shortcuts": [
         [
-            "Clash Verge.exe",
+            "clash-verge.exe",
             "Clash Verge"
         ]
     ],
@@ -23,20 +23,21 @@
     "post_install": [
         "if (!(Test-Path \"$persist_dir\\.config\\PORTABLE\")) {",
         "    New-Item -Path \"$persist_dir\\.config\\PORTABLE\" -ItemType file | Out-Null",
-        "}"
+        "}",
+        "Remove-Item \"$dir\\`$PLUGINSDIR\",\"$dir\\`$TEMP\",\"$dir\\uninstall.exe\" -Force -Recurse -ErrorAction SilentlyContinue"
     ],
     "pre_uninstall": [
         "if (!(is_admin)) { error \"$app requires admin rights to $cmd\"; break }",
-        "Start-Process \"$dir\\resources\\uninstall-service.exe\" -Wait -Verb 'RunAs' -WindowStyle 'Hidden'; Start-Sleep -Seconds 3"
+        "Invoke-ExternalCommand -FilePath \"$dir\\resources\\uninstall-service.exe\" -RunAs"
     ],
     "checkver": "github",
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v$version/Clash.Verge_$version_x64_portable.zip"
+                "url": "https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v$version/Clash.Verge_$version_x64-setup.exe#/dl.7z"
             },
             "arm64": {
-                "url": "https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v$version/Clash.Verge_$version_arm64_portable.zip"
+                "url": "https://github.com/clash-verge-rev/clash-verge-rev/releases/download/v$version/Clash.Verge_$version_arm64-setup.exe#/dl.7z"
             }
         }
     }
