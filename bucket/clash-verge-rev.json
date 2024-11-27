@@ -28,7 +28,8 @@
     ],
     "pre_uninstall": [
         "if (!(is_admin)) { error \"$app requires admin rights to $cmd\"; break }",
-        "Invoke-ExternalCommand -FilePath \"$dir\\resources\\uninstall-service.exe\" -RunAs"
+        "Stop-Process -Name clash-verge*, verge-mihomo* -Force -ErrorAction SilentlyContinue",
+        "sc.exe delete 'clash_verge_service'"
     ],
     "checkver": "github",
     "autoupdate": {
