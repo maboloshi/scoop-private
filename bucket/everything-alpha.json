@@ -59,7 +59,7 @@
     ],
     "checkver": {
         "url": "https://www.voidtools.com/forum/viewtopic.php?f=12&t=9787",
-        "regex": "Everything-([\\d.]+a)\\.x86"
+        "regex": "Everything-([\\d.]+a)\\.x64"
     },
     "autoupdate": {
         "architecture": {
