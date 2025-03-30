@@ -48,7 +48,7 @@
         "       $stream.Write($data, 0, $data.Length)",
         "   }",
         "   $stream.Close()",
-        "}",
+        "}"
     ],
     "pre_uninstall": "if ($cmd -eq 'uninstall') { reg import \"$dir\\uninstall-context.reg\" }",
     "bin": "subl.exe",
