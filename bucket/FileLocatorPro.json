@@ -1,5 +1,11 @@
 {
     "version": "9.2.3435.1",
+    "description": "FileLocator Pro 是一款高性能、专业的文件搜索工具。",
+    "homepage": "https://www.mythicsoft.com/filelocatorpro/",
+    "license": {
+        "identifier": "Shareware",
+        "url": "https://www.mythicsoft.com/filelocatorpro/buy/"
+    },
     "url": [
         "https://download.mythicsoft.com/flp/3435/filelocator_inx64_3435.exe#/filelocator_inx64.exe",
         "https://github.com/maboloshi/scoop-private/releases/download/v1.0/FileLocatorPro-CrackPatch-v9.2.3435.1.zip"
