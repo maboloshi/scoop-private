@@ -31,7 +31,7 @@
         "} elseif (Test-Path $runtimeCache) {",
         "    Move-Item -Path $runtimeCache -Destination $runtimeCachePersist -Force",
         "}",
-        "New-Item -Type Junction -Path $runtimeCache -Target $runtimeCachePersist -Force | Out-Null"
+        "New-DirectoryJunction $runtimeCache $runtimeCachePersist | Out-Null"
     ],
     "post_uninstall": [
         "$runtimeCache = \"$env:LocalAppData\\Microsoft\\Edge Beta\\User Data\"",

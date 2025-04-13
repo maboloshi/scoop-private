@@ -13,7 +13,7 @@
         "    Copy-Item -Path \"$appData\\*\" -Destination \"$persist_dir\" -Force -ErrorAction SilentlyContinue",
         "    Remove-Item -Path \"$appData\" -Force -Recurse -ErrorAction SilentlyContinue",
         "}",
-        "New-Item -Type Junction -Path \"$appData\" -Target \"$persist_dir\" -Force | Out-Null"
+        "New-DirectoryJunction \"$appData\" \"$persist_dir\" | Out-Null"
     ],
     "bin": "Monitorian.exe",
     "shortcuts": [
