@@ -1,5 +1,5 @@
 {
-    "version": "4-4197",
+    "version": "4-4198",
     "description": "A sophisticated text editor for code, markup and prose",
     "homepage": "https://www.sublimetext.com",
     "license": {
@@ -13,8 +13,8 @@
     ],
     "architecture": {
         "64bit": {
-            "url": "https://download.sublimetext.com/sublime_text_build_4197_x64.zip",
-            "hash": "0c81aeb409d21ce831d5413067ef337d416edd511f7a1bd28361e767d8c24923"
+            "url": "https://download.sublimetext.com/sublime_text_build_4198_x64.zip",
+            "hash": "33a619e68374459f6dad6f195df0cc5e6a90a1ddab84f84d0a678164123e8878"
         }
     },
     "post_install": [
