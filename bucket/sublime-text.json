@@ -1,5 +1,5 @@
 {
-    "version": "4-4199",
+    "version": "4-4200",
     "description": "A sophisticated text editor for code, markup and prose",
     "homepage": "https://www.sublimetext.com",
     "license": {
@@ -13,8 +13,8 @@
     ],
     "architecture": {
         "64bit": {
-            "url": "https://download.sublimetext.com/sublime_text_build_4199_x64.zip",
-            "hash": "f8e77a2841b5848bcf3fdaa8b9da51a266239f26c56132e4155db62a04df5cd8"
+            "url": "https://download.sublimetext.com/sublime_text_build_4200_x64.zip",
+            "hash": "d20456bbefcd626c7c89a4a2e95c326a0c570df2fd7626fc35091e43ae5bff9f"
         }
     },
     "post_install": [
@@ -30,16 +30,16 @@
         "        Set-Content -Path \"$dir\\$_\" $content -Encoding 936",
         "    }",
         "}",
-        "if ($version -eq \"4-4199\") {",
+        "if ($version -eq \"4-4200\") {",
         "   info 'Cracking . . .'",
         "   $sublimepath = \"$dir\\sublime_text.exe\"",
         "   $stream = [System.IO.File]::OpenWrite($sublimepath)",
         "   @'",
         "   0X000318AA: 90 90 90 90 90",
         "   0X000318C3: 90 90 90 90 90",
-        "   0X000AA152: 48 C7 C0 00 00 00 00 C3",
-        "   0X000A8635: 48 31 C0 C3",
-        "   0X000A896C: 48 31 C0 C3",
+        "   0X000AA0DC: 48 31 C0 48 FF C0 C3",
+        "   0X000A85E5: 48 31 C0 C3",
+        "   0X000A891C: 48 31 C0 C3",
         "'@ -split \"`r?`n\" | ForEach-Object {",
         "       $offset, $data = ($_ -split ':').Trim()",
         "       $offset = [convert]::ToInt32($offset, 16)",
