@@ -61,10 +61,10 @@
             "/NORESTART"
         ]
     },
-    "post_uninstall": [
-        "Remove-Item -Path \"$env:APPDATA\\GPSoftware\\Directory Opus\"",
-        "Remove-Item -Path \"$env:LOCALAPPDATA\\GPSoftware\\Directory Opus\\State Data\""
-    ],
+    // "post_uninstall": [
+    //     "Remove-Item -Path \"$env:APPDATA\\GPSoftware\\Directory Opus\"",
+    //     "Remove-Item -Path \"$env:LOCALAPPDATA\\GPSoftware\\Directory Opus\\State Data\""
+    // ],
     "checkver": {
         "script": [
             "$rssUrl = 'https://resource.dopus.com/c/new-releases/28.rss'",
