@@ -11,7 +11,7 @@
             ],
             "hash": [
                 "0616d44e0fa235aaae31678c74643e70a258b74d588a16063ef5937227ecac6e",
-                "5886214e293635f857e6b75b29b99be83b4c19dca5b7c52efb43d44cd9f2dd26"
+                "782f3c01fc1b8a3b74f0331035100239b42ee20457bfbe4b0bc666df9cc09567"
             ]
         }
     },
@@ -63,7 +63,10 @@
     "autoupdate": {
         "architecture": {
             "64bit": {
-                "url": "https://www.voidtools.com/Everything-$version.x64.zip"
+                "url": [
+                    "https://www.voidtools.com/Everything-1.5.0.1396a.x64.zip",
+                    "https://www.voidtools.com/Everything.lng.zip"
+                ]
             }
         }
     }
