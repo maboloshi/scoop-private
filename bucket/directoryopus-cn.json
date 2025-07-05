@@ -38,6 +38,7 @@
     },
     "post_install": [
         "Write-Host \"`rTry applying crack patch...\" -Foreground Magenta",
+        "Stop-Process -Name 'dopus' -Force -ErrorAction SilentlyContinue",
         "Invoke-ExternalCommand \"cmd.exe\" -ArgumentList @('/c', \"echo y | `\"$dir\\dopus_patcher.exe`\"\") -Quiet -RunAs",
         "Write-Host '[Portable Mode]: Copying user config data . . .' -Foreground Magenta",
         "$source = \"$env:APPDATA\\GPSoftware\\Directory Opus\"",
