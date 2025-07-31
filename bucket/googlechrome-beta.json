@@ -1,5 +1,5 @@
 {
-    "version": "139.0.7258.52",
+    "version": "139.0.7258.66",
     "description": "Fast, secure, and free web browser, built for the modern web.",
     "homepage": "https://www.google.com/chrome/beta",
     "license": {
@@ -8,8 +8,8 @@
     },
     "architecture": {
         "64bit": {
-            "url": "https://dl.google.com/release2/chrome/ad53owx33ah4o4x722cwewyhlr6q_139.0.7258.52/139.0.7258.52_chrome_installer.exe#/dl.7z",
-            "hash": "f8a469ffafd31a405f51ca9bd0ec4da8656d5e2447b9693ebac89aedc35468bc"
+            "url": "https://dl.google.com/release2/chrome/pggsb2fl4sexcvcwlymwq6dysa_139.0.7258.66/139.0.7258.66_chrome_installer.exe#/dl.7z",
+            "hash": "8962735073183a0954eabed17211f59ceb5a6009d506a0352794925ea9504c2e"
         }
     },
     "installer": {
