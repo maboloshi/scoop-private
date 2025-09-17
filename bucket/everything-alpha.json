@@ -64,7 +64,7 @@
         "architecture": {
             "64bit": {
                 "url": [
-                    "https://www.voidtools.com/Everything-$version.zip",
+                    "https://www.voidtools.com/Everything-$version.x64.zip",
                     "https://www.voidtools.com/Everything.lng.zip"
                 ]
             }
