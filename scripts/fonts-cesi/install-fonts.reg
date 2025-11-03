@@ -1,0 +1,18 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Fonts]
+"CESI仿宋-GB2312 (TrueType)"="$install_dir\\CESI_FS_GB2312.TTF"
+"CESI仿宋-GB13000 (TrueType)"="$install_dir\\CESI_FS_GB13000.TTF"
+"CESI仿宋-GB18030 (TrueType)"="$install_dir\\CESI_FS_GB18030.TTF"
+"CESI黑体-GB2312 (TrueType)"="$install_dir\\CESI_HT_GB2312.TTF"
+"CESI黑体-GB13000 (TrueType)"="$install_dir\\CESI_HT_GB13000.TTF"
+"CESI黑体-GB18030 (TrueType)"="$install_dir\\CESI_HT_GB18030.TTF"
+"CESI楷体-GB2312 (TrueType)"="$install_dir\\CESI_KT_GB2312.TTF"
+"CESI楷体-GB13000 (TrueType)"="$install_dir\\CESI_KT_GB13000.TTF"
+"CESI楷体-GB18030 (TrueType)"="$install_dir\\CESI_KT_GB18030.TTF"
+"CESI宋体-GB2312 (TrueType)"="$install_dir\\CESI_SS_GB2312.TTF"
+"CESI宋体-GB13000 (TrueType)"="$install_dir\\CESI_SS_GB13000.TTF"
+"CESI宋体-GB18030 (TrueType)"="$install_dir\\CESI_SS_GB18030.TTF"
+"CESI小标宋-GB2312 (TrueType)"="$install_dir\\CESI_XBS_GB2312.TTF"
+"CESI小标宋-GB13000 (TrueType)"="$install_dir\\CESI_XBS_GB13000.TTF"
+"CESI小标宋-GB18030 (TrueType)"="$install_dir\\CESI_XBS_GB18030.TTF"
