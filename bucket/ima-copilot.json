@@ -30,9 +30,9 @@
         "script": [
             "$prefix = 'https://github.com/SpecterShell/Dumplings/raw/refs/heads/main/Tasks/Tencent.ima-copilot'",
             "$stateYamlUrl = $prefix + '/State.yaml'",
-            "$stateContent = (Invoke-WebRequest -Uri $stateYamlUrl').Content",
+            "$stateContent = (Invoke-WebRequest -Uri $stateYamlUrl).Content",
             "$logFileUrl = \"$prefix/$stateContent\"",
-            "$logContent = Invoke-RestMethod -Uri $logFileUrl -UseBasicParsing'",
+            "$logContent = Invoke-RestMethod -Uri $logFileUrl -UseBasicParsing",
             "Write-Output $logContent"
         ],
         "regex": "InstallerUrl:\\s*(?<url>.+)\\s*[\\s\\S]+?RealVersion:\\s*(?<version>[0-9.]+)"
