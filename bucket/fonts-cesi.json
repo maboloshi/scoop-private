@@ -35,11 +35,7 @@
         "        Set-Content -Path \"$dir\\$_\" $content -Encoding Unicode",
         "    }",
         "}",
-        "Start-Process -Wait regedit.exe -ArgumentList @('/s', \"$dir\\install-fonts.reg\")"
+        "reg import \"$dir\\install-fonts.reg\""
     ],
-    "pre_uninstall": [
-        "if ($cmd -eq 'uninstall') {",
-        "    Start-Process -Wait regedit.exe -ArgumentList @('/s', \"$dir\\uninstall-fonts.reg\")",
-        "}"
-    ]
+    "pre_uninstall": "if ($cmd -eq 'uninstall') { reg import \"$dir\\uninstall-fonts.reg\" }"
 }
