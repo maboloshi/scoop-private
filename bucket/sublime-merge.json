@@ -23,14 +23,15 @@
         "$dir_escaped = \"$dir\".Replace('\\', '\\\\')",
         "@('install-context.reg', 'uninstall-context.reg') | ForEach-Object {",
         "    if (Test-Path \"$bucketsdir\\$bucket\\scripts\\$app\\$_\") {",
-        "        $content = Get-Content \"$bucketsdir\\$bucket\\scripts\\$app\\$_\" -Encoding 936",
+        "        $content = Get-Content \"$bucketsdir\\$bucket\\scripts\\$app\\$_\" -Encoding Unicode",
         "        $content = $content.Replace('$install_dir', $dir_escaped)",
         "        if ($global) {",
         "            $content = $content.Replace('HKEY_CURRENT_USER', 'HKEY_LOCAL_MACHINE')",
         "        }",
-        "        Set-Content -Path \"$dir\\$_\" $content -Encoding 936",
+        "        Set-Content -Path \"$dir\\$_\" $content -Encoding Unicode",
         "    }",
         "}",
+        "Start-Process -Wait regedit.exe -ArgumentList @('/s', \"$dir\\install-context.reg\")",
         "if ($version -eq \"2112\") {",
         "    info 'Cracking . . .'",
         "    $sublimepath = \"$dir\\sublime_merge.exe\"",
@@ -51,7 +52,11 @@
         "    $stream.Close()",
         "}"
     ],
-    "pre_uninstall": "if ($cmd -eq 'uninstall') { reg import \"$dir\\uninstall-context.reg\" }",
+    "pre_uninstall": [
+        "if ($cmd -eq 'uninstall') {",
+        "    Start-Process -Wait regedit.exe -ArgumentList @('/s', \"$dir\\uninstall-context.reg\")",
+        "}"
+    ],
     "bin": "smerge.exe",
     "shortcuts": [
         [

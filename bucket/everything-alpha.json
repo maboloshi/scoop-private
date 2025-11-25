@@ -24,15 +24,15 @@
         "$dir_escaped = \"$dir\".Replace('\\', '\\\\')",
         "@('install-context.reg', 'uninstall-context.reg') | ForEach-Object {",
         "    if (Test-Path \"$bucketsdir\\$bucket\\scripts\\$app\\$_\") {",
-        "        $content = Get-Content \"$bucketsdir\\$bucket\\scripts\\$app\\$_\" -Encoding 936",
+        "        $content = Get-Content \"$bucketsdir\\$bucket\\scripts\\$app\\$_\" -Encoding Unicode",
         "        $content = $content.Replace('$install_dir', $dir_escaped)",
         "        if ($global) {",
         "            $content = $content.Replace('HKEY_CURRENT_USER', 'HKEY_LOCAL_MACHINE')",
         "        }",
-        "        Set-Content -Path \"$dir\\$_\" $content -Encoding 936",
+        "        Set-Content -Path \"$dir\\$_\" $content -Encoding Unicode",
         "    }",
         "}",
-        "reg import \"$dir\\install-context.reg\""
+        "Start-Process -Wait regedit.exe -ArgumentList @('/s', \"$dir\\install-context.reg\")"
     ],
     "pre_uninstall": [
         "if ($cmd -eq 'uninstall') {",
@@ -45,7 +45,7 @@
         "            sc.exe stop \"$ServiceName\"; sc.exe delete \"$ServiceName\"",
         "        }",
         "    }",
-        "    reg import \"$dir\\uninstall-context.reg\"",
+        "    Start-Process -Wait regedit.exe -ArgumentList @('/s', \"$dir\\uninstall-context.reg\")",
         "}",
         "Get-ChildItem \"$dir\\*\" -Exclude 'Everything.exe', 'Everything.lng', 'install-context.reg', 'uninstall-context.reg', 'install.json', 'manifest.json' | Copy-Item -Destination \"$persist_dir\" -ErrorAction SilentlyContinue -Force"
     ],
