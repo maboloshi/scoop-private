@@ -34,6 +34,8 @@ scoop install scoop-private/<软件名>
 
 ## 扩展
 
+### resetx 命令
+
 本仓库新增了一个`resetx`命令。当重装系统后，若直接使用`reset`命令，会出现不会执行`Manifest`文件中`post_install`节进行本地化设置的情况。而`resetx`命令恰好能解决此问题，给用户操作带来便利。
 
 > 关于`post_install`：它可能涉及一些本地化设置，例如对右键菜单中路径进行调整。
@@ -48,12 +50,64 @@ scoop alias add resetx "$env:SCOOP\buckets\scoop-private\Scripts\scoop-resetx.ps
 
 ```powershell
 Copy-Item "$env:SCOOP\buckets\scoop-private\Scripts\scoop-resetx.ps1" "$env:SCOOP\apps\scoop\current\libexec\"
+
+# 解锁 scoop-resetx.ps1 文件
+Unblock-File -Path "$env:SCOOP\apps\scoop\current\libexec\scoop-resetx.ps1"
 ```
 
 使用方法参考`reset`命令：
 
 ```powershell
 scoop resetx <app>
+```
+
+### updatex 命令
+
+本仓库新增了一个`updatex`命令，解决了原始`scoop update`在更新多个应用时，单个应用更新失败会导致整个更新过程中断的问题。`updatex`命令提供增强的错误处理能力，确保单个应用的更新失败不会影响其他应用的更新。
+
+主要特性：
+- ✅ 基于原始 scoop update 逻辑，优先更新 Scoop 自身
+- ✅ 单个应用更新失败不会中断整个更新过程
+- ✅ 提供详细的更新摘要报告
+- ✅ 支持交互式错误处理
+
+> [!TIP]
+> 如果在更新应用时遇到"运行中的进程阻止更新"的错误，可以设置 `ignore_running_processes` 配置项来忽略这些进程：
+> ```powershell
+> scoop config ignore_running_processes $true
+> ```
+> 这会让 Scoop 在更新时忽略正在运行的进程。请注意，这可能会导致数据丢失或应用不稳定，建议在设置前确保相关应用已关闭。
+
+创建别名：
+
+```powershell
+scoop alias add updatex "$env:SCOOP\buckets\scoop-private\Scripts\scoop-updatex.ps1"
+```
+
+或安装到 Scoop：
+
+```powershell
+Copy-Item "$env:SCOOP\buckets\scoop-private\Scripts\scoop-updatex.ps1" "$env:SCOOP\apps\scoop\current\libexec\"
+
+# 解锁 scoop-updatex.ps1 文件
+Unblock-File -Path "$env:SCOOP\apps\scoop\current\libexec\scoop-updatex.ps1"
+```
+
+使用方法：
+
+```powershell
+# 基本用法
+scoop updatex                        # 更新所有应用
+scoop updatex git nodejs             # 只更新 git 和 nodejs
+
+# 增强功能
+scoop updatex -SkipErrors            # 遇到错误时跳过并继续更新
+scoop updatex -SkipErrors -Force     # 强制更新所有应用，跳过错误
+
+# 支持原始 update 命令的所有参数
+scoop updatex -Global                # 更新全局安装的应用
+scoop updatex * -NoCache             # 更新所有应用，不使用缓存
+scoop updatex -All -SkipHashCheck    # 更新所有应用，跳过哈希验证
 ```
 
 ## 参考
