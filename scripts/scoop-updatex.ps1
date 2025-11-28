@@ -1,9 +1,11 @@
 # 用法：scoop updatex <app> [选项]
-# Summary: 增强的 Scoop 更新命令，更新应用程序或 Scoop 自身
+# Summary: 🚀 增强的 Scoop 更新命令，更新应用程序或 Scoop 自身
 # Help: 'scoop updatex' 将 Scoop 更新至最新版本
 # 'scoop updatex <app>' 将安装该应用的新版本（如果存在）
 #
-# 可使用 '*' 代替 <app> 来更新所有应用
+# 参数:
+#  [app...]         要更新的特定应用列表，不指定则更新所有应用
+#  *                   更新所有应用（与 -All 相同）
 #
 # 选项：
 #   -f, --force            即使没有新版本也强制更新
@@ -16,9 +18,9 @@
 #   -e, --skip-errors      遇到错误时跳过并继续更新其他应用
 #
 # 示例:
-#  scoop updatex                        # 更新所有应用
-#  scoop updatex git nodejs             # 只更新 git 和 nodejs
-#  scoop updatex -e -f                  # 强制更新所有应用，跳过错误（使用短参数）
+#  scoop updatex                          # 更新所有应用
+#  scoop updatex git nodejs               # 只更新 git 和 nodejs
+#  scoop updatex -e -f                    # 强制更新所有应用，跳过错误（使用短参数）
 #  scoop updatex * --global --skip-errors # 更新所有全局应用，跳过错误（使用长参数）
 #
 # 特点:
@@ -27,23 +29,24 @@
 #  ✅ 提供详细的更新摘要报告
 #  ✅ 支持交互式错误处理
 
-. "$PSScriptRoot\..\lib\getopt.ps1"
+# 导入必要的库（与原脚本相同）
+. "$PSScriptRoot\..\lib\getopt.ps1" # 'getopt'
 . "$PSScriptRoot\..\lib\json.ps1" # 'save_install_info' in 'manifest.ps1' (indirectly)
-. "$PSScriptRoot\..\lib\system.ps1"
-. "$PSScriptRoot\..\lib\shortcuts.ps1"
-. "$PSScriptRoot\..\lib\psmodules.ps1"
-. "$PSScriptRoot\..\lib\decompress.ps1"
-. "$PSScriptRoot\..\lib\manifest.ps1"
-. "$PSScriptRoot\..\lib\versions.ps1"
-. "$PSScriptRoot\..\lib\depends.ps1"
-. "$PSScriptRoot\..\lib\install.ps1"
-. "$PSScriptRoot\..\lib\download.ps1"
+# . "$PSScriptRoot\..\lib\system.ps1"
+# . "$PSScriptRoot\..\lib\shortcuts.ps1"
+# . "$PSScriptRoot\..\lib\psmodules.ps1"
+# . "$PSScriptRoot\..\lib\decompress.ps1"
+. "$PSScriptRoot\..\lib\manifest.ps1" # 'manifest' 'install_info' 'Select-CurrentVersion' (indirectly)
+. "$PSScriptRoot\..\lib\versions.ps1" # 'Select-CurrentVersion'
+# . "$PSScriptRoot\..\lib\depends.ps1"
+# . "$PSScriptRoot\..\lib\install.ps1"
+. "$PSScriptRoot\..\lib\download.ps1" # 'Get-UserAgent'
 if (get_config USE_SQLITE_CACHE) {
-    . "$PSScriptRoot\..\lib\database.ps1"
+    . "$PSScriptRoot\..\lib\database.ps1" # 'Set-ScoopDB'
 }
 
 $opt, $apps, $err = getopt $args 'gfiksqae' 'global', 'force', 'independent', 'no-cache', 'skip-hash-check', 'quiet', 'all', 'skip-errors'
-if ($err) { "scoop update: $err"; exit 1 }
+if ($err) { "scoop updatex: $err"; exit 1 }
 $global = $opt.g -or $opt.global
 $force = $opt.f -or $opt.force
 $check_hash = !($opt.s -or $opt.'skip-hash-check')
@@ -52,11 +55,6 @@ $quiet = $opt.q -or $opt.quiet
 $independent = $opt.i -or $opt.independent
 $all = $opt.a -or $opt.all
 $skip_errors = $opt.e -or $opt.'skip-errors'
-
-# 新增：跳过错误参数
-if ($args -contains '--skip-errors') {
-    $skip_errors = $true
-}
 
 # load config
 $configRepo = get_config SCOOP_REPO
@@ -80,6 +78,7 @@ if (($PSVersionTable.PSVersion.Major) -lt 5) {
 }
 $show_update_log = get_config SHOW_UPDATE_LOG $true
 
+# 以下是原始脚本的函数定义，保持不变
 function Sync-Scoop {
     [CmdletBinding()]
     Param (
@@ -93,7 +92,7 @@ function Sync-Scoop {
     # check for git
     if (!(Test-GitAvailable)) { abort "Scoop 使用 Git 进行自我更新。请运行 'scoop install git' 后重试。" }
 
-    Write-Host '更新 Scoop...'
+    Write-Host '正在更新 Scoop...'
     $currentdir = versiondir 'scoop' 'current'
     if (!(Test-Path "$currentdir\.git")) {
         $newdir = "$currentdir\..\new"
@@ -175,17 +174,17 @@ function Sync-Bucket {
     Param (
         [Switch]$Log
     )
-    Write-Host 'Updating Buckets...'
+    Write-Host '正在更新 Buckets...'
 
     if (!(Test-Path (Join-Path (Find-BucketDirectory 'main' -Root) '.git'))) {
-        info "Converting 'main' bucket to git repo..."
+        info "将 'main' buckets 转换为 git 仓库..."
         $status = rm_bucket 'main'
         if ($status -ne 0) {
-            abort "Failed to remove local 'main' bucket."
+            abort "未能移除本地 “main” Buckets。"
         }
         $status = add_bucket 'main' (known_bucket_repo 'main')
         if ($status -ne 0) {
-            abort "Failed to add remote 'main' bucket."
+            abort "无法添加远程 'main' bucket."
         }
     }
 
@@ -271,189 +270,21 @@ function Sync-Bucket {
         }
     }
     if ((get_config USE_SQLITE_CACHE) -and ($updatedFiles.Count -gt 0 -or $removedFiles.Count -gt 0)) {
-        info 'Updating cache...'
+        info '正在更新缓存...'
         Set-ScoopDB -Path $updatedFiles
         $removedFiles | Remove-ScoopDBItem
     }
 }
 
-# 新增：安全安装函数，用于Hook abort
-function Install-With-Abort-Hook {
-    param(
-        [string]$App,
-        [string]$Architecture,
-        [bool]$Global,
-        [hashtable]$Suggested,
-        [bool]$UseCache = $true,
-        [bool]$CheckHash = $true
-    )
-
-    # 保存原始abort函数
-    $savedAbort = $function:abort
-
-    try {
-        # 临时重写abort函数，使其抛出异常而不是退出进程
-        $function:abort = {
-            param([string]$message)
-            Write-Error "中止拦截：$message"
-            throw "安装已中止：$message"
-        }
-
-        # 调用install_app
-        install_app $App $Architecture $Global $Suggested $UseCache $CheckHash
-        return $true
-    } catch {
-        Write-Error "安装失败: $($_.Exception.Message)"
-        return $false
-    } finally {
-        # 恢复原始abort函数
-        $function:abort = $savedAbort
-    }
-}
-
-function update($app, $global, $quiet = $false, $independent, $suggested, $use_cache = $true, $check_hash = $true) {
-    $old_version = Select-CurrentVersion -AppName $app -Global:$global
-    $old_manifest = installed_manifest $app $old_version $global
-    $install = install_info $app $old_version $global
-
-    # re-use architecture, bucket and url from first install
-    $architecture = Format-ArchitectureString $install.architecture
-    $bucket = $install.bucket
-    if ($null -eq $bucket) {
-        $bucket = 'main'
-    }
-    $url = $install.url
-
-    $manifest = manifest $app $bucket $url
-    $version = $manifest.version
-    $is_nightly = $version -eq 'nightly'
-    if ($is_nightly) {
-        $version = nightly_version $quiet
-        $check_hash = $false
-    }
-
-    if (!$force -and ($old_version -eq $version)) {
-        if (!$quiet) {
-            warn "'$app' ($version) 的最新版本已安装完成。"
-        }
-        return
-    }
-    if (!$version) {
-        # installed from a custom bucket/no longer supported
-        error "没有可用于“$app”的清单。"
-        return
-    }
-
-    Write-Host "🔄 正在更新: '$app' ($old_version -> $version)"
-
-    #region Workaround for #2952
-    if (test_running_process $app $global) {
-        Write-Host '检测到运行中的进程，跳过更新。'
-        return
-    }
-    #endregion Workaround for #2952
-
-    # region Workaround
-    # Workaround for https://github.com/ScoopInstaller/Scoop/issues/2220 until install is refactored
-    # Remove and replace whole region after proper fix
-    Write-Host '正在下载新版本'
-    if (Test-Aria2Enabled) {
-        Invoke-CachedAria2Download $app $version $manifest $architecture $cachedir $manifest.cookie $true $check_hash
-    } else {
-        $urls = script:url $manifest $architecture
-
-        foreach ($url in $urls) {
-            Invoke-CachedDownload $app $version $url $null $manifest.cookie $true
-
-            if ($check_hash) {
-                $manifest_hash = hash_for_url $manifest $url $architecture
-                $source = cache_path $app $version $url
-                $ok, $err = check_hash $source $manifest_hash $(show_app $app $bucket)
-
-                if (!$ok) {
-                    error $err
-                    if (Test-Path $source) {
-                        # rm cached file
-                        Remove-Item -Force $source
-                    }
-                    if ($url.Contains('sourceforge.net')) {
-                        Write-Host -f yellow 'SourceForge.net 因常导致哈希验证失败而闻名。请在提交工单前重试。'
-                    }
-                    abort $(new_issue_msg $app $bucket '哈希校验失败')
-                }
-            }
-        }
-    }
-    # There is no need to check hash again while installing
-    $check_hash = $false
-    # endregion Workaround
-
-    $dir = versiondir $app $old_version $global
-    $persist_dir = persistdir $app $global
-
-    Invoke-HookScript -HookType 'pre_uninstall' -Manifest $old_manifest -Arch $architecture
-
-    Write-Host "正在卸载 '$app' ($old_version)"
-    Invoke-Installer -Path $dir -Manifest $old_manifest -ProcessorArchitecture $architecture -Uninstall
-    rm_shims $app $old_manifest $global $architecture
-
-    # If a junction was used during install, that will have been used
-    # as the reference directory. Otherwise it will just be the version
-    # directory.
-    $refdir = unlink_current $dir
-    uninstall_psmodule $old_manifest $refdir $global
-    env_rm_path $old_manifest $refdir $global $architecture
-    env_rm $old_manifest $global $architecture
-
-    if ($force -and ($old_version -eq $version)) {
-        if (!(Test-Path "$dir/../_$version.old")) {
-            Move-Item "$dir" "$dir/../_$version.old"
-        } else {
-            $i = 1
-            While (Test-Path "$dir/../_$version.old($i)") {
-                $i++
-            }
-            Move-Item "$dir" "$dir/../_$version.old($i)"
-        }
-    }
-
-    Invoke-HookScript -HookType 'post_uninstall' -Manifest $old_manifest -Arch $architecture
-
-    if ($bucket) {
-        # add bucket name it was installed from
-        $app = "$bucket/$app"
-    }
-    if ($install.url) {
-        # use the url of the install json if the application was installed through url
-        $app = $install.url
-    }
-
-    if ($independent) {
-        # 使用安全的安装函数
-        $installSuccess = Install-With-Abort-Hook -App $app -Architecture $architecture -Global $global -Suggested $suggested -UseCache $use_cache -CheckHash $check_hash
-        if (-not $installSuccess) {
-            throw "安装失败"
-        }
-    } else {
-        # Also add missing dependencies
-        $apps = @(Get-Dependency $app $architecture) -ne $app
-        ensure_none_failed $apps
-        $apps.Where({ !(installed $_) }) + $app | ForEach-Object {
-            $installSuccess = Install-With-Abort-Hook -App $_ -Architecture $architecture -Global $global -Suggested $suggested -UseCache $use_cache -CheckHash $check_hash
-            if (-not $installSuccess) {
-                throw "安装失败"
-            }
-        }
-    }
-}
-
+# 主逻辑开始
 if (-not ($apps -or $all)) {
+    # 没有指定应用，更新 Scoop 自身
     if ($global) {
-        error 'scoop update：当未指定 <app> 时，--global参数无效。'
+        error 'scoop updatex：当未指定 <app> 时，--global参数无效。'
         exit 1
     }
     if (!$use_cache) {
-        error 'scoop update：未指定 <app> 时，--no-cache参数无效。'
+        error 'scoop updatex：未指定 <app> 时，--no-cache参数无效。'
         exit 1
     }
     Sync-Scoop -Log:$show_update_log
@@ -487,6 +318,7 @@ if (-not ($apps -or $all)) {
             $apps = Confirm-InstallationStatus $apps_param -Global:$global
         }
     }
+
     if ($apps) {
         $apps | ForEach-Object {
             ($app, $global) = $_
@@ -501,7 +333,7 @@ if (-not ($apps -or $all)) {
             } elseif ($apps_param -ne '*' -and !$all) {
                 if ($status.installed) {
                     ensure_none_failed $app
-                    Write-Host "$app`：$($status.version)（最新版本）" -ForegroundColor Green
+                    Write-Host "$app`: $($status.version)（最新版本）" -ForegroundColor Green
                 } else {
                     info '请重新安装或修复清单文件。'
                 }
@@ -522,9 +354,7 @@ if (-not ($apps -or $all)) {
         }
     }
 
-    $suggested = @{}
-
-    # 增强部分：逐个更新应用并处理错误
+    # === 增强部分：逐个更新应用并处理错误 ===
     $successCount = 0
     $failCount = 0
     $failedApps = @()
@@ -532,18 +362,37 @@ if (-not ($apps -or $all)) {
     foreach ($appInfo in $outdated) {
         ($app, $isGlobal) = $appInfo
 
-        # Write-Host "`n🔄 正在更新: $app" -ForegroundColor Blue
+        # 获取应用状态以显示版本信息
+        $status = app_status $app $isGlobal
+        $old_version = $status.version
+        $new_version = $status.latest_version
+
+        # 显示原脚本的更新提示
+        Write-Host "🔄 正在更新: '$app' ($old_version -> $new_version)"
+
+        # 构建 scoop update 命令参数
+        $updateArgs = @('update', $app)
+        if ($isGlobal) { $updateArgs += '--global' }
+        if ($Force) { $updateArgs += '--force' }
+        if ($Independent) { $updateArgs += '--independent' }
+        if ($NoCache) { $updateArgs += '--no-cache' }
+        if ($SkipHashCheck) { $updateArgs += '--skip-hash-check' }
+        if ($Quiet) { $updateArgs += '--quiet' }
 
         try {
-            update $app $isGlobal $quiet $independent $suggested $use_cache $check_hash
-            # Write-Host "✅ $app 更新成功" -ForegroundColor Green
-            $successCount++
+            # 直接调用 scoop update 命令（而不是调用 install_app）
+            & scoop @updateArgs
+
+            if ($LASTEXITCODE -eq 0) {
+                $successCount++
+            } else {
+                throw "scoop update 返回代码: $LASTEXITCODE"
+            }
         } catch {
-            Write-Host "❌ $app 更新失败: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "错误：'$app' 更新失败" -ForegroundColor Red
             $failCount++
             $failedApps += $app
 
-            # 这里可以添加 --skip-errors 逻辑
             if (-not $skip_errors) {
                 # 询问用户是否继续
                 do {
@@ -555,6 +404,8 @@ if (-not ($apps -or $all)) {
                     Write-Host "⏹️ 用户中止更新过程" -ForegroundColor Yellow
                     break
                 }
+            } else {
+                Write-Host "跳过错误并继续处理其他应用..." -ForegroundColor Yellow
             }
         }
     }
@@ -567,6 +418,13 @@ if (-not ($apps -or $all)) {
     if ($failCount -gt 0) {
         Write-Host "❌ 失败: $failCount" -ForegroundColor Red
         Write-Host "失败的应用: $($failedApps -join ', ')" -ForegroundColor Yellow
+
+        if (-not $quiet) {
+            Write-Host "`n💡 提示：您可以使用以下命令重试失败的应用：" -ForegroundColor Cyan
+            foreach ($failedApp in $failedApps) {
+                Write-Host "  scoop update $failedApp" -ForegroundColor Gray
+            }
+        }
     } else {
         Write-Host "🎉 所有应用更新成功!" -ForegroundColor Green
     }
