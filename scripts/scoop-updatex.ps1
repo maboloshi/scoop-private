@@ -39,7 +39,8 @@ if (-not $env:SCOOP) {
 . "$env:SCOOP\apps\scoop\current\lib\getopt.ps1"
 . "$env:SCOOP\apps\scoop\current\lib\core.ps1"
 . "$env:SCOOP\apps\scoop\current\lib\buckets.ps1"
-. "$env:SCOOP\apps\scoop\current\lib\manifest.ps1"
+. "$env:SCOOP\apps\scoop\current\lib\manifest.ps1" # 'Get-UserAgent' in 'download.ps1' (indirectly)
+. "$env:SCOOP\apps\scoop\current\lib\download.ps1"
 . "$env:SCOOP\apps\scoop\current\lib\versions.ps1"
 
 # 设置 scoop-update.ps1 路径
