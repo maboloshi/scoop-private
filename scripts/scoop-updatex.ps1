@@ -1,5 +1,5 @@
-# 用法：scoop updatex <app> [选项]
-# Summary: 🚀 增强的 Scoop 更新命令，更新应用程序或 Scoop 自身
+# Usage: scoop updatex <app> [选项]
+# Summary: 🚀 增强的 Scoop update 命令，更新应用程序或 Scoop 自身，并解决批量更新时，当单个应用更新失败中断整个更新过程
 # Help: 'scoop updatex' 将 Scoop 更新至最新版本
 # 'scoop updatex <app>' 将安装该应用的新版本（如果存在）
 #
@@ -18,7 +18,7 @@
 #   -e, --skip-errors      遇到错误时跳过并继续更新其他应用
 #
 # 示例:
-#  scoop updatex                          # 更新所有应用
+#  scoop updatex                          # 更新 Scoop 及 Buckets
 #  scoop updatex git nodejs               # 只更新 git 和 nodejs
 #  scoop updatex -e -f                    # 强制更新所有应用，跳过错误（使用短参数）
 #  scoop updatex * --global --skip-errors # 更新所有全局应用，跳过错误（使用长参数）
@@ -31,8 +31,7 @@
 
 # 检查SCOOP环境变量
 if (-not $env:SCOOP) {
-    Write-Error "环境变量 SCOOP 未设置，请确保 Scoop 已正确安装。"
-    exit 1
+    abort "环境变量 SCOOP 未设置，请确保 Scoop 已正确安装。"
 }
 
 # 只导入必要的核心库
@@ -65,7 +64,7 @@ if (-not ($apps -or $all)) {
     exit $LASTEXITCODE
 } else {
     if ($global -and !(is_admin)) {
-        '错误：您需要管理员权限才能更新全局应用程序。'; exit 1
+        abort "您需要管理员权限才能更新全局应用程序。"
     }
 
     # 检查是否需要更新 Scoop 自身
@@ -120,8 +119,7 @@ if (-not ($apps -or $all)) {
     $skippedApps = @()
 
     $outdated | ForEach-Object {
-        $app = $_[0]
-        $global = $_[1]
+        ($app, $global) = $_
 
         # 获取应用状态以显示版本信息
         $status = app_status $app $global
@@ -186,8 +184,8 @@ if (-not ($apps -or $all)) {
 
         if ($skipCount -gt 0) {
             Write-Host "⏭️ 跳过: $skipCount" -ForegroundColor Yellow
-            foreach ($skippedApp in $skippedApps) {
-                Write-Host "   $($skippedApp.Name) - $($skippedApp.Reason)" -ForegroundColor Gray
+            $skippedApps | ForEach-Object {
+                Write-Host "   $($_.Name) - $($_.Reason)" -ForegroundColor Gray
             }
         }
 
@@ -196,8 +194,8 @@ if (-not ($apps -or $all)) {
             Write-Host "失败的应用: $($failedApps -join ', ')" -ForegroundColor Yellow
 
             Write-Host "`n💡 提示: 可以使用以下命令重试失败的应用:" -ForegroundColor Cyan
-            foreach ($failedApp in $failedApps) {
-                Write-Host "  scoop update $failedApp" -ForegroundColor Gray
+            $failedApps | ForEach-Object {
+                Write-Host "  scoop update $_" -ForegroundColor Gray
             }
         }
 
