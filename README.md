@@ -50,9 +50,6 @@ scoop alias add resetx "$env:SCOOP\buckets\scoop-private\Scripts\scoop-resetx.ps
 
 ```powershell
 Copy-Item "$env:SCOOP\buckets\scoop-private\Scripts\scoop-resetx.ps1" "$env:SCOOP\apps\scoop\current\libexec\"
-
-# 解锁 scoop-resetx.ps1 文件
-Unblock-File -Path "$env:SCOOP\apps\scoop\current\libexec\scoop-resetx.ps1"
 ```
 
 使用方法参考`reset`命令：
@@ -60,6 +57,12 @@ Unblock-File -Path "$env:SCOOP\apps\scoop\current\libexec\scoop-resetx.ps1"
 ```powershell
 scoop resetx <app>
 ```
+
+> [!TIP]
+> 如果遇到运行权限问题，可使用以下命令解锁
+> ```powershell
+> Unblock-File -Path 'xxx.ps1'
+> ```
 
 ### updatex 命令
 
@@ -88,16 +91,13 @@ scoop alias add updatex "$env:SCOOP\buckets\scoop-private\Scripts\scoop-updatex.
 
 ```powershell
 Copy-Item "$env:SCOOP\buckets\scoop-private\Scripts\scoop-updatex.ps1" "$env:SCOOP\apps\scoop\current\libexec\"
-
-# 解锁 scoop-updatex.ps1 文件
-Unblock-File -Path "$env:SCOOP\apps\scoop\current\libexec\scoop-updatex.ps1"
 ```
 
 使用方法：
 
 ```powershell
 # 基本用法
-scoop updatex                        # 更新所有应用
+scoop updatex                        # 更新 Scoop 及 Buckets
 scoop updatex git nodejs             # 只更新 git 和 nodejs
 
 # 增强功能
