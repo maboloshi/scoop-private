@@ -1,18 +1,22 @@
 # Usage: scoop resetx <app>
-# Summary: Reset an app to resolve conflicts, and also reset the localization settings by running post_install
-# Help: Used to resolve conflicts in favor of a particular app. For example,
-# if you've installed 'python' and 'python27', you can use 'scoop resetx' to switch between
-# using one or the other.
+# Summary: 🚀 增强的 Scoop reset 命令，重置应用以解决冲突，并通过运行 post_install 来重置本地化设置
+# Help: 用于解决特定应用程序之间的冲突，并通过运行 post_install 来重置本地化设置。
+# 例如，若您同时安装了'python'和'python27'，可通过'scoop resetx'命令在两者之间切换使用。
 #
-# You can use '*' in place of <app> or `-a`/`--all` switch to reset all apps.
+# 您可以使用 '*' 替代 <app> 或 `-a`/`--all` 开关来重置所有应用。
 
-. "$PSScriptRoot\..\lib\getopt.ps1"
-. "$PSScriptRoot\..\lib\manifest.ps1" # 'Select-CurrentVersion' (indirectly)
-. "$PSScriptRoot\..\lib\system.ps1" # 'env_add_path' (indirectly)
-. "$PSScriptRoot\..\lib\install.ps1"
-. "$PSScriptRoot\..\lib\psmodules.ps1" # 'install_psmodule' (indirectly)
-. "$PSScriptRoot\..\lib\versions.ps1" # 'Select-CurrentVersion'
-. "$PSScriptRoot\..\lib\shortcuts.ps1"
+# 检查SCOOP环境变量
+if (-not $env:SCOOP) {
+    abort "环境变量 SCOOP 未设置，请确保 Scoop 已正确安装。"
+}
+
+. "$env:SCOOP\apps\scoop\current\lib\getopt.ps1"
+. "$env:SCOOP\apps\scoop\current\lib\manifest.ps1" # 'Select-CurrentVersion' (indirectly)
+. "$env:SCOOP\apps\scoop\current\lib\system.ps1" # 'env_add_path' (indirectly)
+. "$env:SCOOP\apps\scoop\current\lib\install.ps1"
+. "$env:SCOOP\apps\scoop\current\lib\psmodules.ps1" # 'install_psmodule' (indirectly)
+. "$env:SCOOP\apps\scoop\current\lib\versions.ps1" # 'Select-CurrentVersion'
+. "$env:SCOOP\apps\scoop\current\lib\shortcuts.ps1"
 
 $opt, $apps, $err = getopt $args 'a' 'all'
 if($err) { "scoop reset: $err"; exit 1 }

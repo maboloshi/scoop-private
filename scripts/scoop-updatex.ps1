@@ -1,5 +1,5 @@
 # Usage: scoop updatex <app> [选项]
-# Summary: 🚀 增强的 Scoop update 命令，更新应用程序或 Scoop 自身，并解决批量更新时，当单个应用更新失败中断整个更新过程
+# Summary: 🚀 增强的 Scoop update 命令，更新应用程序或 Scoop 自身，并解决批量更新时，当单个应用更新失败中断整个更新过程。
 # Help: 'scoop updatex' 将 Scoop 更新至最新版本
 # 'scoop updatex <app>' 将安装该应用的新版本（如果存在）
 #
