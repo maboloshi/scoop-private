@@ -18,11 +18,11 @@ jobs:
           app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: Checkout Bucket
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: my_bucket
       - name: Checkout Scoop
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: ScoopInstaller/Scoop
           path: scoop_core
