@@ -32,6 +32,9 @@
         "UV_PYTHON_INSTALL_MIRROR": "https://mirror.nju.edu.cn/github-release/astral-sh/python-build-standalone/"
     },
     "##": "更多环境变量设置 详见：https://docs.astral.sh/uv/reference/environment/",
+    "post_install": [
+        "Copy-Item \"$bucketsdir\\$bucket\\scripts\\$app\\Setup-UVEnv.ps1\" \"$dir\""
+    ],
     "checkver": {
         "github": "https://github.com/astral-sh/uv"
     },
