@@ -9,6 +9,10 @@
             "hash": "7ca7a43da656d9c5fd4b40ce6e8de19bc46d51e026c9dfd4909c1bc8b25f88bc"
         }
     },
+    "notes": [
+        "可运行以下命令创建“模拟全局 Python 环境”:",
+        "   \"$dir\\Setup-UVEnv.ps1 $persist_dir\""
+    ],
     "bin": [
         "uv.exe",
         "uvx.exe",
