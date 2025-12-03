@@ -34,29 +34,24 @@ scoop install scoop-private/<软件名>
 
 ## 扩展
 
-### resetx 命令
+### 增强命令
 
-本仓库新增了一个`resetx`命令。当重装系统后，若直接使用`reset`命令，会出现不会执行`Manifest`文件中`post_install`节进行本地化设置的情况。而`resetx`命令恰好能解决此问题，给用户操作带来便利。
+本仓库新增了三个增强命令：`resetx`、`updatex` 和 `cleanupx`，它们分别解决了原生命令在某些场景下的不足。
 
-> 关于`post_install`：它可能涉及一些本地化设置，例如对右键菜单中路径进行调整。
+#### 安装方法
 
-创建别名：
-
-```powershell
-scoop alias add resetx "$env:SCOOP\buckets\scoop-private\Scripts\scoop-resetx.ps1"
-```
-
-或安装到 Scoop：
+将以下脚本文件复制到 `$env:SCOOP\apps\scoop\current\libexec\` 目录即可安装这三个增强命令：
 
 ```powershell
-Copy-Item "$env:SCOOP\buckets\scoop-private\Scripts\scoop-resetx.ps1" "$env:SCOOP\apps\scoop\current\libexec\"
+Copy-Item "$env:SCOOP\buckets\scoop-private\Scripts\scoop-*.ps1" "$env:SCOOP\apps\scoop\current\libexec\"
 ```
 
-使用方法参考`reset`命令：
-
-```powershell
-scoop resetx <app>
-```
+> [!IMPORTANT]
+> **文件编码要求**
+>
+> 由于这些增强命令脚本包含中文字符，脚本文件(.ps1)和注册表文件(.reg)必须保存为 **UTF-16 LE with BOM** 编码格式，以确保在 Windows PowerShell 5.1 中正确显示和执行。
+>
+> 如果你需要修改或创建这些脚本，请确保使用支持该编码的编辑器（如 VS Code、Notepad++ 等）并正确设置编码格式。
 
 > [!TIP]
 > 如果遇到运行权限问题，可使用以下命令解锁
@@ -64,15 +59,25 @@ scoop resetx <app>
 > Unblock-File -Path 'xxx.ps1'
 > ```
 
+### resetx 命令
+
+当重装系统后，若直接使用`reset`命令，会出现不会执行`Manifest`文件中`post_install`节进行本地化设置的情况。而`resetx`命令恰好能解决此问题，给用户操作带来便利。
+
+> 关于`post_install`：它可能涉及一些本地化设置，例如对右键菜单中路径进行调整。
+
+使用方法参考`reset`命令：
+
+```powershell
+scoop resetx <app>
+```
+
 ### updatex 命令
 
-本仓库新增了一个`updatex`命令，解决了原始`scoop update`在更新多个应用时，单个应用更新失败会导致整个更新过程中断的问题。`updatex`命令提供增强的错误处理能力，确保单个应用的更新失败不会影响其他应用的更新。
+解决了原始`scoop update`在更新多个应用时，单个应用更新失败会导致整个更新过程中断的问题。
 
-主要特性：
-- ✅ 基于原始 scoop update 逻辑，优先更新 Scoop 自身
-- ✅ 单个应用更新失败不会中断整个更新过程
-- ✅ 提供详细的更新摘要报告
-- ✅ 支持交互式错误处理
+```powershell
+scoop updatex [<app>...]
+```
 
 > [!TIP]
 > 如果在更新应用时遇到"运行中的进程阻止更新"的错误，可以设置 `ignore_running_processes` 配置项来忽略这些进程：
@@ -81,33 +86,12 @@ scoop resetx <app>
 > ```
 > 这会让 Scoop 在更新时忽略正在运行的进程。请注意，这可能会导致数据丢失或应用不稳定，建议在设置前确保相关应用已关闭。
 
-创建别名：
+### cleanupx 命令
+
+解决了原始`scoop cleanup`在清理多个应用时，单个应用清理失败会导致整个清理过程中断的问题。
 
 ```powershell
-scoop alias add updatex "$env:SCOOP\buckets\scoop-private\Scripts\scoop-updatex.ps1"
-```
-
-或安装到 Scoop：
-
-```powershell
-Copy-Item "$env:SCOOP\buckets\scoop-private\Scripts\scoop-updatex.ps1" "$env:SCOOP\apps\scoop\current\libexec\"
-```
-
-使用方法：
-
-```powershell
-# 基本用法
-scoop updatex                        # 更新 Scoop 及 Buckets
-scoop updatex git nodejs             # 只更新 git 和 nodejs
-
-# 增强功能
-scoop updatex -SkipErrors            # 遇到错误时跳过并继续更新
-scoop updatex -SkipErrors -Force     # 强制更新所有应用，跳过错误
-
-# 支持原始 update 命令的所有参数
-scoop updatex -Global                # 更新全局安装的应用
-scoop updatex * -NoCache             # 更新所有应用，不使用缓存
-scoop updatex -All -SkipHashCheck    # 更新所有应用，跳过哈希验证
+scoop cleanupx [<app>...]
 ```
 
 ## 参考
