@@ -32,6 +32,32 @@ scoop bucket add scoop-private https://github.com/maboloshi/scoop-private
 scoop install scoop-private/<软件名>
 ```
 
+## 小技巧
+
+### 开启缓存
+
+为加速 `search` 查询功能，可执行以下命令开启缓存：
+
+```powershell
+scoop config use_sqlite_cache $True
+```
+
+### 关于遇到 “运行中的进程阻止更新” 的错误
+
+如果在 `reset/uninstall/update` 应用时遇到 “运行中的进程阻止更新” 的错误，可以设置 `ignore_running_processes` 配置项来忽略这些进程：
+
+```powershell
+scoop config ignore_running_processes $true
+```
+
+这会让 Scoop 在`reset/uninstall/update`时忽略正在运行的进程。***请注意，这可能会导致数据丢失或应用不稳定，建议在设置前确保相关应用已关闭。***
+
+### 关于文件编码
+
+由于历史遗留问题 Win 10/11 自带的 Windows PowerShell 5.1 仅支持编码格式为 **UTF-16 LE with BOM** 的**包含中文字符**的脚本文件(.ps1)和注册表文件(.reg)等正确显示和执行。
+
+如果你需要修改或创建包含中文的脚本、注册表文件等，请确保使用支持该编码的编辑器（如 VS Code、Notepad++ 等）并正确设置编码格式。
+
 ## 扩展
 
 ### 增强命令
@@ -46,13 +72,6 @@ scoop install scoop-private/<软件名>
 ```powershell
 Copy-Item "$env:SCOOP\buckets\scoop-private\Scripts\scoop-*.ps1" "$env:SCOOP\shims\"
 ```
-
-> [!IMPORTANT]
-> **文件编码要求**
->
-> 由于这些增强命令脚本包含中文字符，脚本文件(.ps1)和注册表文件(.reg)必须保存为 **UTF-16 LE with BOM** 编码格式，以确保在 Windows PowerShell 5.1 中正确显示和执行。
->
-> 如果你需要修改或创建这些脚本，请确保使用支持该编码的编辑器（如 VS Code、Notepad++ 等）并正确设置编码格式。
 
 > [!TIP]
 > 如果遇到运行权限问题，可使用以下命令解锁:
@@ -77,13 +96,6 @@ scoop resetx <app>
 ```powershell
 scoop updatex [<app>...]
 ```
-
-> [!TIP]
-> 如果在更新应用时遇到"运行中的进程阻止更新"的错误，可以设置 `ignore_running_processes` 配置项来忽略这些进程：
-> ```powershell
-> scoop config ignore_running_processes $true
-> ```
-> 这会让 Scoop 在更新时忽略正在运行的进程。请注意，这可能会导致数据丢失或应用不稳定，建议在设置前确保相关应用已关闭。
 
 ### cleanupx 命令
 
