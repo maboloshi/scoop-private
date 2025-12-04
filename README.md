@@ -40,10 +40,11 @@ scoop install scoop-private/<软件名>
 
 #### 安装方法
 
-将以下脚本文件复制到 `$env:SCOOP\apps\scoop\current\libexec\` 目录即可安装这三个增强命令：
+将以下脚本文件复制到 `$env:SCOOP\shims\` 目录即可安装这三个增强命令：
+> 规避直接安装到 `$env:SCOOP\apps\scoop\current\libexec\` 目录，导致无法更新 Scoop 自身。
 
 ```powershell
-Copy-Item "$env:SCOOP\buckets\scoop-private\Scripts\scoop-*.ps1" "$env:SCOOP\apps\scoop\current\libexec\"
+Copy-Item "$env:SCOOP\buckets\scoop-private\Scripts\scoop-*.ps1" "$env:SCOOP\shims\"
 ```
 
 > [!IMPORTANT]
@@ -54,18 +55,16 @@ Copy-Item "$env:SCOOP\buckets\scoop-private\Scripts\scoop-*.ps1" "$env:SCOOP\app
 > 如果你需要修改或创建这些脚本，请确保使用支持该编码的编辑器（如 VS Code、Notepad++ 等）并正确设置编码格式。
 
 > [!TIP]
-> 如果遇到运行权限问题，可使用以下命令解锁
+> 如果遇到运行权限问题，可使用以下命令解锁:
+>
 > ```powershell
 > Unblock-File -Path 'xxx.ps1'
 > ```
 
 ### resetx 命令
 
-当重装系统后，若直接使用`reset`命令，会出现不会执行`Manifest`文件中`post_install`节进行本地化设置的情况。而`resetx`命令恰好能解决此问题，给用户操作带来便利。
-
-> 关于`post_install`：它可能涉及一些本地化设置，例如对右键菜单中路径进行调整。
-
-使用方法参考`reset`命令：
+解决了原始`scoop reset`不会执行`Manifest`文件中`post_install`节进行本地化设置的问题。
+> 关于`post_install`节：一般可能涉及一些本地化设置，例如对右键菜单中路径进行调整。
 
 ```powershell
 scoop resetx <app>
