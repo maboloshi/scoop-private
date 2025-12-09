@@ -1,5 +1,5 @@
 {
-    "version": "3.39.1.427",
+    "version": "3.40.1.423",
     "description": "tencent meeting",
     "homepage": "https://meeting.tencent.com/index.html",
     "license": {
@@ -8,8 +8,8 @@
     },
     "architecture": {
         "64bit": {
-            "url": "https://updatecdn.meeting.qq.com/cos/9a27d0a6b9faf68786d997cea293a201/TencentMeeting_0300000000_3.39.1.427_x86_64.publish.officialwebsite.exe#/dl.7z",
-            "hash": "md5:9a27d0a6b9faf68786d997cea293a201"
+            "url": "https://updatecdn.meeting.qq.com/cos/e60bb1e5028a5de8c17346b394eceace/TencentMeeting_0300000000_3.40.1.423_x86_64.publish.officialwebsite.exe#/dl.7z",
+            "hash": "md5:e60bb1e5028a5de8c17346b394eceace"
         }
     },
     "installer": {
