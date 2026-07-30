@@ -1,0 +1,39 @@
+on:
+  workflow_dispatch:
+  schedule:
+    # run every 4 hours
+    - cron: '20 */4 * * *'
+name: New Excavator via Hok
+jobs:
+  excavate:
+
+    name: Excavate
+    runs-on: windows-latest
+    environment: Excavator
+    steps:
+      - name: Generate a token
+        id: generate_token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.APP_CLIENT_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - name: Checkout Bucket
+        uses: actions/checkout@v7
+        with:
+          path: my_bucket
+      - name: Download hok (latest release)
+        shell: pwsh
+        run: |
+          $releases = Invoke-RestMethod "https://api.github.com/repos/maboloshi/hok/releases/latest"
+          $asset = $releases.assets | Where-Object { $_.name -eq "hok.exe" }
+          $url = $asset.browser_download_url
+          Write-Host "Downloading hok.exe from $url"
+          Invoke-WebRequest -Uri $url -OutFile "$env:RUNNER_TEMP\hok.exe"
+      - name: Excavate
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: |
+          $hok = "$env:RUNNER_TEMP\hok.exe"
+          cd my_bucket
+          & $hok ci-auto-pr --push -d bucket -o "${{ github.ref_name }}"
