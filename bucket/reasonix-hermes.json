@@ -16,10 +16,13 @@
         }
     },
     "extract_to": "",
-    "bin": "reasonix-hermes.exe",
+    "bin": [
+        "reasonix.exe",
+        "reasonix-hermes"
+    ],
     "checkver": {
         "url": "https://registry.npmmirror.com/@aliatx2017/reasonix-hermes-win32-x64",
-        "jsonpath": "$.\"dist-tags\".latest"
+        "jsonpath": "$['dist-tags'].latest"
     },
     "autoupdate": {
         "architecture": {
