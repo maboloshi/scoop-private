@@ -22,13 +22,13 @@ jobs:
         with:
           path: my_bucket
       - name: Download hok (latest release)
-        shell: pwsh
-        run: |
-          $releases = Invoke-RestMethod "https://api.github.com/repos/maboloshi/hok/releases/latest"
-          $asset = $releases.assets | Where-Object { $_.name -eq "hok.exe" }
-          $url = $asset.browser_download_url
-          Write-Host "Downloading hok.exe from $url"
-          Invoke-WebRequest -Uri $url -OutFile "$env:RUNNER_TEMP\hok.exe"
+        uses: robinraju/release-downloader@v1.3
+        with:
+          repository: "maboloshi/hok"
+          latest: true
+          fileName: "hok.exe"
+          out-file-path: "${{ runner.temp }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Excavate
         shell: pwsh
         env:
