@@ -1,12 +1,12 @@
 {
-    "version": "5.5.1.37570276",
+    "version": "5.5.2.37672479",
     "description": "腾讯云代码助手推出的 AI Agent 办公工具，可自主规划并交付多模态复杂任务结果。",
     "homepage": "https://www.codebuddy.cn/work/",
     "license": "Proprietary",
     "architecture": {
         "64bit": {
-            "url": "https://download.codebuddy.cn/workbuddy/saas/win32-x64-user/WorkBuddy-win32-x64-user-5.5.1.37570276-9af62480.exe#/dl.7z",
-            "hash": "61e501b8f821cd7b9866212147cfa1900263b8883bd3f2eb0c3223ad8fda373d",
+            "url": "https://download.codebuddy.cn/workbuddy/saas/win32-x64-user/WorkBuddy-win32-x64-user-5.5.2.37672479-2b0177c3.exe#/dl.7z",
+            "hash": "ab8b2cd10218e584b51c2f6975fe0c3e05fd724b85f761242f46b95860986d58",
             "pre_install": [
                 "Expand-7zipArchive \"$dir\\`$PLUGINSDIR\\app-64.7z\" \"$dir\"",
                 "Remove-Item \"$dir\\`$*\" -Recurse"
