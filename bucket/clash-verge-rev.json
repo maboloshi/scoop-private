@@ -13,6 +13,12 @@
             "hash": "6832ebc90aa85343a4321afae42cf6b039e83d1900ec371898f90eb94dd1b318"
         }
     },
+    "post_install": [
+        "if (!(Test-Path \"$persist_dir\\.config\\PORTABLE\")) {",
+        "    New-Item -Path \"$persist_dir\\.config\\PORTABLE\" -ItemType file | Out-Null",
+        "}",
+        "Remove-Item -Path \"$dir\\`$PLUGINSDIR\",\"$dir\\`$TEMP\",\"$dir\\uninstall.exe\" -Force -Recurse -ErrorAction SilentlyContinue"
+    ],
     "shortcuts": [
         [
             "clash-verge.exe",
@@ -20,12 +26,6 @@
         ]
     ],
     "persist": ".config",
-    "post_install": [
-        "if (!(Test-Path \"$persist_dir\\.config\\PORTABLE\")) {",
-        "    New-Item -Path \"$persist_dir\\.config\\PORTABLE\" -ItemType file | Out-Null",
-        "}",
-        "Remove-Item \"$dir\\`$PLUGINSDIR\",\"$dir\\`$TEMP\",\"$dir\\uninstall.exe\" -Force -Recurse -ErrorAction SilentlyContinue"
-    ],
     "pre_uninstall": [
         "if (!(is_admin)) { error \"$app requires admin rights to $cmd\"; break }",
         "Stop-Process -Name clash-verge*, verge-mihomo* -Force -ErrorAction SilentlyContinue",

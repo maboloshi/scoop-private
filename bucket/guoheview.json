@@ -6,7 +6,7 @@
     "url": "https://rj.lovestu.com/api/v1/release-files/151/download#/dl.7z",
     "hash": "md5:2a6c9955023a6bc6649427e2e515bd69",
     "extract_dir": "GuoheViewPortable",
-    "post_install": "Remove-Item \"$dir\\GuoheView-Updater.exe\" -Force -Recurse -ErrorAction SilentlyContinue",
+    "post_install": "Remove-Item -Path \"$dir\\GuoheView-Updater.exe\" -Force -Recurse -ErrorAction SilentlyContinue",
     "bin": "GuoheView.exe",
     "shortcuts": [
         [

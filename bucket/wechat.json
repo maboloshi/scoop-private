@@ -16,16 +16,16 @@
         }
     },
     "post_install": [
-        "Remove-Item \"$dir\\`$*\", \"$dir\\Uninst*\" -Force -Recurse",
+        "Remove-Item -Path \"$dir\\`$*\", \"$dir\\Uninst*\" -Force -Recurse",
         "$configpath = ensure \"$env:APPDATA\\Tencent\\WeChat\\All Users\\config\"",
         "# 设置微信文件保存位置",
         "$FileSavePath = if (Test-Path \"E:\\微信聊天记录\") { \"E:\\微信聊天记录\" } else { ensure \"$persist_dir\" }",
         "Set-Content -NoNewline -Path \"$configpath\\3ebffe94.ini\" -Value \"$FileSavePath\"",
-        "$regpath = \"HKCU:Software\\Tencent\\WeChat\"",
-        "if (!(Test-Path \"$regpath\")) {",
-        "    New-Item -Path \"$regpath\" -Type Directory -Force | Out-Null",
+        "$registryKey = \"HKCU:\\Software\\Tencent\\WeChat\"",
+        "if (!(Test-Path \"$registryKey\")) {",
+        "    New-Item -Path \"$registryKey\" -Type Directory -Force | Out-Null",
         "}",
-        "New-ItemProperty -Path $regpath -Name \"FileSavePath\" -Value \"$FileSavePath\" -Force | Out-Null"
+        "New-ItemProperty -Path $registryKey -Name \"FileSavePath\" -Value \"$FileSavePath\" -Force | Out-Null"
     ],
     "shortcuts": [
         [
@@ -36,7 +36,7 @@
     "persist": "WeChat Files",
     "post_uninstall": [
         "Remove-Item -Path \"$env:APPDATA\\Tencent\\WeChat\\All Users\\config\\3ebffe94.ini\" -Force | Out-Null",
-        "Remove-ItemProperty -Path \"HKCU:Software\\Tencent\\WeChat\" -Name \"FileSavePath\" -Force | Out-Null"
+        "Remove-ItemProperty -Path \"HKCU:\\Software\\Tencent\\WeChat\" -Name \"FileSavePath\" -Force | Out-Null"
     ],
     "checkver": {
         "script": [
