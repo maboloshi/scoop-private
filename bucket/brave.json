@@ -34,7 +34,18 @@
         "} elseif (Test-Path $runtimeCache) {",
         "    Move-Item -Path $runtimeCache -Destination $runtimeCachePersist -Force",
         "}",
-        "New-DirectoryJunction $runtimeCache $runtimeCachePersist | Out-Null"
+        "New-DirectoryJunction $runtimeCache $runtimeCachePersist | Out-Null",
+        "# 分发缩放设置脚本，供用户手动运行",
+        "Copy-Item \"$bucketsdir\\$bucket\\scripts\\$app\\Set-Brave-Scale.ps1\" \"$dir\""
+    ],
+    "notes": [
+        "Brave 默认程序启动缩放参数需手动设置（Windows 的 UserChoice 保护不允许脚本自动完成）。",
+        "步骤：",
+        "  1. 打开 设置 > 应用 > 默认应用，将 Brave 设为默认浏览器。",
+        "  2. 运行脚本: $dir\\Set-Brave-Scale.ps1",
+        "     或右键该文件 > 使用 PowerShell 运行。",
+        "脚本作用：为 BraveHTML / BraveFile 的 shell\\open\\command 追加 --force-device-scale-factor=1.5。",
+        "如需改缩放比例，编辑脚本顶部的 $scale 变量。"
     ],
     "post_uninstall": [
         "# 删除数据软连接",
