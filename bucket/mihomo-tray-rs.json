@@ -21,6 +21,12 @@
             "mihomo-cat.ico"
         ]
     ],
+    "pre_uninstall": [
+        "$rkey = 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run'",
+        "if ($cmd -eq 'uninstall') {",
+        "    Remove-ItemProperty $rkey -Name 'mihomo-tray' -ErrorAction SilentlyContinue",
+        "}"
+    ],
     "persist": [
         "lang",
         "tray.yml"
