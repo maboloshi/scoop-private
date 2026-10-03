@@ -18,13 +18,13 @@
     "checkver": {
         "url": "https://rj.lovestu.com/download/gh_view",
         "jsonpath": "$.data",
-        "regex": "\"version\":\\s*\"([\\d.]+)\"[\\s\\S]*?\\.7z\"[\\s\\S]*?\"url\":\\s*\"([^\"]+)\""
+        "regex": "\"version\":\\s*\"(?<version>[\\d.]+)\"[\\s\\S]*?\"id\":\\s*(?<id>\\d+)[^}]*?\\.7z\""
     },
     "autoupdate": {
-        "url": "$match2#/dl.7z",
+        "url": "https://rj.lovestu.com/api/v1/release-files/$matchId/download#/dl.7z",
         "hash": {
             "url": "https://rj.lovestu.com/download/gh_view",
-            "jsonpath": "$.data.files[?(@.url == '$match2')].md5"
+            "jsonpath": "$.data.files[?(@.id == '$matchId')].md5"
         }
     }
 }
