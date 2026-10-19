@@ -1,6 +1,6 @@
 {
     "##": "更多环境变量设置 详见：https://docs.astral.sh/uv/reference/environment/",
-    "version": "0.13.1",
+    "version": "0.13.2",
     "description": "An extremely fast Python package installer and resolver, written in Rust.",
     "homepage": "https://docs.astral.sh/uv/",
     "license": "Apache-2.0|MIT",
@@ -10,8 +10,8 @@
     ],
     "architecture": {
         "64bit": {
-            "url": "https://github.com/astral-sh/uv/releases/download/0.13.1/uv-x86_64-pc-windows-msvc.zip",
-            "hash": "3b2661a463a5baea7f5076ea2b25ab71d77f36a6c0d809e5350651792f80a672"
+            "url": "https://github.com/astral-sh/uv/releases/download/0.13.2/uv-x86_64-pc-windows-msvc.zip",
+            "hash": "9cfb447a4027550f134753253fdffbcd35b79a66dd888260bf6776891916069e"
         }
     },
     "post_install": "Copy-Item \"$bucketsdir\\$bucket\\scripts\\$app\\Setup-UVEnv.ps1\" \"$dir\"",
