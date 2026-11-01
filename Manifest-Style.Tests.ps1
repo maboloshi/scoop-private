@@ -1,8 +1,9 @@
 #Requires -Version 5.1
 
 BeforeDiscovery {
+    $manifestRoots = @("$PSScriptRoot\bucket", "$PSScriptRoot\deprecated") | Where-Object { Test-Path $_ }
     $manifestPaths = @(
-        Get-ChildItem "$PSScriptRoot\bucket", "$PSScriptRoot\deprecated" -Filter '*.json' -File -Recurse |
+        Get-ChildItem $manifestRoots -Filter '*.json' -File -Recurse -ErrorAction SilentlyContinue |
             ForEach-Object { $_.FullName }
     )
 
@@ -52,6 +53,15 @@ Describe 'Manifest style' {
                             $lines += @($value.$key | Where-Object { $_ -is [string] })
                         }
                     }
+                    foreach ($key in 'installer', 'uninstaller') {
+                        if ($value.$key -and $value.$key.script) {
+                            if ($value.$key.script -is [string]) {
+                                $lines += $value.$key.script
+                            } else {
+                                $lines += @($value.$key.script | Where-Object { $_ -is [string] })
+                            }
+                        }
+                    }
                 }
             }
             return $lines
@@ -59,11 +69,18 @@ Describe 'Manifest style' {
     }
 
     It 'manifest files are normalized' {
-        $output = & "$repoRoot\bin\format-manifests.ps1" -Check
+        # *>&1 captures Write-Host (Information stream) into $output so
+        # the -Because message surfaces the offending file names.
+        $output = & "$repoRoot\bin\format-manifests.ps1" -Check *>&1
         $LASTEXITCODE | Should -Be 0 -Because ($output -join [Environment]::NewLine)
     }
 
     It '<_> follows the embedded script conventions' -TestCases $manifestPaths {
+        # ConvertFrom-Json (without -NoEnumerate) is used because
+        # -NoEnumerate does not exist on Windows PowerShell 5.1.
+        # Get-EmbeddedScriptLine handles both string and array forms, so
+        # PS 5.1's single-element array unwrapping does not affect the
+        # collected script lines.
         $manifest = Get-Content -Path $_ -Raw -Encoding UTF8 | ConvertFrom-Json
         $script = @(Get-EmbeddedScriptLine -Manifest $manifest)
 
@@ -82,6 +99,7 @@ Describe 'Manifest style' {
 Describe 'Script encoding' {
     It '<_> uses UTF-16 LE with BOM' -TestCases $nonAsciiScriptPaths {
         $bytes = [System.IO.File]::ReadAllBytes($_)
+        $bytes.Length | Should -BeGreaterThan 1
         $bytes[0] | Should -Be 0xFF
         $bytes[1] | Should -Be 0xFE
     }
