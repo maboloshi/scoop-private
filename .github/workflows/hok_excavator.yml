@@ -22,7 +22,7 @@ jobs:
         with:
           path: my_bucket
       - name: Download hok (latest release)
-        uses: robinraju/release-downloader@v1.3
+        uses: robinraju/release-downloader@v1.13
         with:
           repository: "maboloshi/hok"
           latest: true
