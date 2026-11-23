@@ -1,5 +1,5 @@
 {
-    "version": "5.3.4.0",
+    "version": "5.4.0.0",
     "description": "A unlimited speed multifunctional remote control software",
     "homepage": "https://www.todesk.com/",
     "license": {
@@ -8,8 +8,8 @@
     },
     "architecture": {
         "64bit": {
-            "url": "https://update.todesk.com/irrigation/ToDesk_Setup_5.3.4.0_x64.exe#/dl.7z",
-            "hash": "edcfd2aa41678655395b040d74df9328640900dc85590087b0c4e4c9a356020d",
+            "url": "https://update.todesk.com/irrigation/ToDesk_Setup_5.4.0.0_x64.exe#/dl.7z",
+            "hash": "a037fb60290803fb4d13acf3d79a556e25a91fab9e0e6b075b00daaef1ed5665",
             "installer": {
                 "script": "Expand-7ZipArchive \"$dir\\app64.7z\" \"$dir\" -Removal"
             }
