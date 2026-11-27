@@ -5,6 +5,10 @@
     "license": "Freeware",
     "url": "https://lf-flow-web-cdn.doubao.com/obj/flow-doubao/doubao_pc/2.37.18/Doubao_installer_2.37.18.exe#/dl.7z",
     "hash": "7eda546f43af056055a9ab74039106ed3d42a2d3c8540159a50d4ba720f37d32",
+    "pre_install": [
+        "Expand-7zipArchive \"$dir\\*~\" \"$dir\" -Removal",
+        "Remove-Item \"$dir\\`$PLUGINSDIR\" -Recurse -Force -ErrorAction SilentlyContinue",
+    ],
     "post_install": [
         "# 数据迁移",
         "$link = \"$env:LocalAppData\\Doubao\\User Data\"",
